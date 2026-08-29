@@ -3,6 +3,10 @@
 # Sourced by every role script. Not executable on its own.
 
 # ── Repository / paths ─────────────────────────────────────────────────────
+# Where the role scripts live. Resolved from this file so helpers here can invoke
+# siblings (serve-app.sh, run-agent.sh) without every caller passing a path.
+TEAM_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 REPO="${TEAM_REPO:-lfrmonteiro99/monthy_budget}"
 
 # Repo root (the git top level), and the Flutter package inside it.
@@ -37,6 +41,12 @@ STATE_DIR="${TEAM_STATE_DIR:-$HOME/Documentos/monthy-budget-verdicts/state}"
 PORT_PROD="${TEAM_PORT_PROD:-7401}"
 PORT_DEV="${TEAM_PORT_DEV:-7402}"
 
+# The pre-merge gate serves the PR's own branch, so it needs a port of its own:
+# the critic may be driving 7401 and the verifier 7402 at the same moment, and a
+# gate that reused either would test whichever build happened to be up — exactly
+# the confusion it exists to prevent.
+PORT_PREMERGE="${TEAM_PORT_PREMERGE:-7403}"
+
 # Which critic dimensions have already run against the CURRENT production code.
 # Shared: the orchestrator reads it to decide what to sweep, and critic.sh writes it
 # as each dimension actually starts. Ownership matters here — see the comment at the
@@ -52,13 +62,14 @@ L_TRIAGE="qa:triage"              # critic filed it, awaiting curator
 L_READY="qa:ready"                # curated: root cause + plan + AC + test steps
 L_WIP="qa:wip"                    # implementer working
 L_REVIEW="qa:review"              # PR open into dev, awaiting reviewer
+L_PREMERGE="qa:premerge"          # approved by the reviewer, awaiting the browser gate
 L_VERIFY="qa:verify"              # merged to dev, awaiting QA re-test
 L_DONE="qa:done"                  # verified on dev
 L_BLOCKED_IMPL="qa:blocked-impl"  # back to implementer (code problem)
 L_BLOCKED_SPEC="qa:blocked-spec"  # back to curator (spec problem)
 L_HUMAN="qa:needs-human"          # pipeline gave up
 
-ALL_QA_LABELS="$L_TRIAGE,$L_READY,$L_WIP,$L_REVIEW,$L_VERIFY,$L_DONE,$L_BLOCKED_IMPL,$L_BLOCKED_SPEC,$L_HUMAN"
+ALL_QA_LABELS="$L_TRIAGE,$L_READY,$L_WIP,$L_REVIEW,$L_PREMERGE,$L_VERIFY,$L_DONE,$L_BLOCKED_IMPL,$L_BLOCKED_SPEC,$L_HUMAN"
 
 log() { echo "[${ROLE:-team}] $(date +%H:%M:%S) $*"; }
 warn() { echo "[${ROLE:-team}] $(date +%H:%M:%S) WARN $*" >&2; }
@@ -212,6 +223,106 @@ no_verdict_is_real_failure() {
     return 1
   fi
   return 0
+}
+
+# ── The UI tester ──────────────────────────────────────────────────────────
+#
+# Build a branch, serve it, and drive the real app against an issue's acceptance
+# criteria. TWO stages call this: the pre-merge gate (on the PR's own branch,
+# before anything is integrated) and the post-merge verifier (on `dev`, after).
+#
+# It is ONE function on purpose. The two stages ask the same question — "is the
+# defect actually gone in the running app?" — and the moment they ask it with two
+# copies of the prompt, the copies drift: one gets a sharper rubric, the other a
+# stricter verdict schema, and a fix starts passing one gate and failing the other
+# for reasons that have nothing to do with the code. Only the framing sentence
+# differs, and that arrives as $6.
+#
+# The CALLER owns routing, because the two stages route differently: a pre-merge
+# failure leaves the PR open, a post-merge failure leaves broken code in dev.
+# The return code is the routing input:
+#
+#   0  verdict written to $4
+#   1  environment failed (build, serve or toolkit) — nobody's fault, retry later
+#   2  no verdict AND the run itself was degraded (no quota, slot taken)
+#   3  no verdict on a healthy run — the tester had its chance and produced nothing
+#
+# Sets UI_TESTER_SCRATCH and UI_TESTER_LOG for the caller to quote in comments.
+UI_TESTER_SCRATCH=""
+UI_TESTER_LOG=""
+
+run_ui_tester() {
+  local issue="$1" branch="$2" port="$3" verdict_file="$4" stage="$5" stage_context="$6"
+  local app_url="http://127.0.0.1:$port"
+  local qa_tools="${TEAM_QA_TOOLS:-$HOME/Documentos/monthy-budget-qa-tools}"
+  local model="${UI_TESTER_MODEL:-sonnet}"
+  local prompt="/tmp/$stage-prompt-$issue.txt"
+
+  UI_TESTER_SCRATCH="$LOG_DIR/$stage-$issue-$(date +%H%M%S)"
+  UI_TESTER_LOG="$LOG_DIR/$stage-$issue.log"
+  mkdir -p "$UI_TESTER_SCRATCH" 2>/dev/null || true
+
+  log "a garantir que a app de '$branch' está a servir e actualizada (porta $port)..."
+  bash "$TEAM_SCRIPT_DIR/serve-app.sh" "$branch" --port "$port" || {
+    warn "não consegui compilar/servir '$branch'"; return 1; }
+
+  # Serving is not running. The build can succeed and the server still not answer,
+  # and a tester pointed at a dead URL reports the defect as present — condemning a
+  # fix for an environment fault.
+  curl -fsS -o /dev/null --max-time 5 "$app_url/" || {
+    warn "$app_url não responde"; return 1; }
+
+  bash "$TEAM_SCRIPT_DIR/qa-tools-setup.sh" >>"$LOG_DIR/$stage-$issue.toolkit.log" 2>&1 || {
+    warn "toolkit de browser não ficou pronto"; return 1; }
+
+  local issue_json
+  issue_json=$(gh issue view "$issue" --repo "$REPO" \
+    --json title,body,comments --jq '
+    "# " + .title + "\n\n" + (.body // "") + "\n\n## Comentários\n\n" +
+    (if (.comments | length) > 0 then
+       ([.comments[] | "- **@" + (.author.login // "anon") + "**: " + (.body // "")] | join("\n\n"))
+     else "(sem comentários)" end)' 2>/dev/null) || {
+    warn "não consegui ler o issue #$issue"; return 1; }
+
+  # The framing paragraph is substituted with awk, not sed: it is multi-line and
+  # contains backticks and pipes, all of which either break a sed s|| expression
+  # or get silently mangled by it. A mangled framing is worse than an obvious
+  # failure — the tester would still run, just against the wrong premise.
+  local ctx_file="/tmp/$stage-ctx-$issue.txt"
+  printf '%s\n' "$stage_context" > "$ctx_file"
+
+  {
+    awk -v ctx="$ctx_file" '
+      /__STAGE_CONTEXT__/ { while ((getline line < ctx) > 0) print line; close(ctx); next }
+      { print }
+    ' "$TEAM_SCRIPT_DIR/verify-prompt.md"
+    echo ""
+    echo "---"
+    echo ""
+    echo "# O issue a verificar"
+    echo ""
+    echo "Os \"Critérios de aceitação\" e o \"Como testar\" estão nos comentários do"
+    echo "curator abaixo. O relato do implementador diz o que ele afirma ter feito —"
+    echo "confirma na app, não acredites."
+    echo ""
+    printf '%s\n' "$issue_json"
+  } | sed -e "s|__VERDICT_PATH__|$verdict_file|g" \
+          -e "s|__APP_URL__|$app_url|g" \
+          -e "s|__BRANCH__|$branch|g" \
+          -e "s|__SCRATCH__|$UI_TESTER_SCRATCH|g" \
+          -e "s|__QA_TOOLS__|$qa_tools|g" > "$prompt"
+  rm -f "$ctx_file"
+
+  rm -f "$verdict_file"
+  local rc
+  AGENT_SLOT=main CLAUDE_MODEL="$model" \
+    AGENT_ADD_DIRS="$UI_TESTER_SCRATCH:$qa_tools" \
+    bash "$TEAM_SCRIPT_DIR/run-agent.sh" "$prompt" "$qa_tools" "${UI_TESTER_TIMEOUT:-1800}" \
+    > "$UI_TESTER_LOG" 2>&1; rc=$?
+
+  [ -f "$verdict_file" ] && return 0
+  no_verdict_is_real_failure main "$rc" || return 2
+  return 3
 }
 
 jqv() {

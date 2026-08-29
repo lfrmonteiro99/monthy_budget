@@ -63,6 +63,37 @@ stop_server() {
   rm -f "$PID_FILE"
 }
 
+# Free the port of any OTHER server before binding.
+#
+# stop_server only knows THIS branch's pid. A serve for a different branch that
+# leaked — the orchestrator killed mid-gate, say — still holds the port. The new
+# python server then fails to bind and dies, but `http_ok` answers TRUE from the
+# OLD build still listening there, so this script reports success and the tester
+# drives the previous branch's bundle while believing it is testing this one.
+#
+# That is the whole failure this gate exists to prevent, reintroduced one level
+# down. An occupied port must never read as "already up".
+free_port() {
+  local mine="" pid
+  [ -f "$PID_FILE" ] && mine=$(cat "$PID_FILE" 2>/dev/null || echo "")
+  port_holders() {
+    fuser -n tcp "$PORT" 2>/dev/null | tr -s ' ' '\n' | grep -E '^[0-9]+$' || true
+  }
+  local found=0
+  for pid in $(port_holders); do
+    [ "$pid" = "$mine" ] && continue
+    log "porta $PORT ocupada pelo pid $pid de outro build — a libertar"
+    kill -TERM "$pid" 2>/dev/null || true
+    found=1
+  done
+  [ "$found" = "1" ] || return 0
+  sleep 2
+  for pid in $(port_holders); do
+    [ "$pid" = "$mine" ] && continue
+    kill -KILL "$pid" 2>/dev/null || true
+  done
+}
+
 http_ok() {
   curl -fsS -o /dev/null --max-time 5 "http://127.0.0.1:$PORT/" 2>/dev/null
 }
@@ -100,6 +131,7 @@ fi
 
 log "a preparar '$BRANCH' @ ${HEAD_SHA:0:8} para :$PORT"
 stop_server
+free_port
 
 # ── Fresh worktree at that sha ─────────────────────────────────────────────
 # Always rebuilt from scratch: a stale worktree is how you end up serving code
@@ -140,7 +172,14 @@ nohup python3 "$SCRIPT_DIR/qa_http_server.py" "$PKG/build/web" "$PORT" \
   >>"$LOG_DIR/serve-$SLUG.log" 2>&1 &
 echo $! > "$PID_FILE"
 
+# The server being ALIVE is checked before its answer is believed. A dead pid with
+# a healthy http_ok means something else is serving this port — which is worse
+# than nothing being served, because it looks like success.
 for _ in $(seq 1 30); do
+  if ! kill -0 "$(cat "$PID_FILE" 2>/dev/null || echo 0)" 2>/dev/null; then
+    log "ERRO: o servidor morreu ao arrancar em :$PORT — ver $LOG_DIR/serve-$SLUG.log"
+    exit 1
+  fi
   if http_ok; then
     echo "$HEAD_SHA" > "$SHA_FILE"
     log "a servir '$BRANCH' @ ${HEAD_SHA:0:8} em http://127.0.0.1:$PORT"

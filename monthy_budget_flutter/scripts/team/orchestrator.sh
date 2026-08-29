@@ -215,7 +215,7 @@ onde estão as fronteiras naturais."
 
 count_actionable() {
   local n=0 s
-  for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
+  for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_PREMERGE" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
     n=$(( n + $(issues_with "$s" | grep -c . || true) ))
   done
   echo "$n"
@@ -284,7 +284,7 @@ cleanup_stale() {
     # the bug that destroyed the critic's work: wiping the output of a live agent that
     # happens to run in another slot. So the curator is skipped whenever its own lock
     # is held.
-    local roles="implement review verify"
+    local roles="implement review verify premerge"
     if flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
       roles="curator $roles"
     fi
@@ -352,6 +352,7 @@ Devolvido a \`$L_READY\` para nova tentativa."
 run_curator()   { log "CURATOR -> #$1";     bash "$SCRIPT_DIR/curator.sh" "$1"   || log "curator falhou #$1"; }
 run_implement() { log "IMPLEMENTADOR -> #$1"; bash "$SCRIPT_DIR/implement.sh" "$1" || log "implement falhou #$1"; }
 run_verify()    { log "QA VERIFIER -> #$1"; bash "$SCRIPT_DIR/verify.sh" "$1"    || log "verify falhou #$1"; }
+run_premerge()  { log "GATE PRÉ-MERGE -> #$1"; bash "$SCRIPT_DIR/premerge.sh" "$1" || log "premerge falhou #$1"; }
 run_review()    { log "REVIEWER -> PR #$1"; bash "$SCRIPT_DIR/review.sh" "$1"    || log "review falhou PR #$1"; mark_reviewed "$1"; }
 
 run_critic() {
@@ -569,6 +570,7 @@ if [ -n "$TARGET_ISSUE" ]; then
   case "$STATE" in
     "$L_TRIAGE"|"$L_BLOCKED_SPEC") run_curator "$TARGET_ISSUE" ;;
     "$L_READY"|"$L_BLOCKED_IMPL")  run_implement "$TARGET_ISSUE" ;;
+    "$L_PREMERGE")                 run_premerge "$TARGET_ISSUE" ;;
     "$L_VERIFY")                   run_verify "$TARGET_ISSUE" ;;
     *) log "#$TARGET_ISSUE não está num estado accionável (${STATE:-sem estado})" ;;
   esac
@@ -671,21 +673,34 @@ while true; do
   fi
 
 
-  # Priority order matters. Reviewing first is what unblocks merges; verifying
-  # next is what closes issues. Only then do we start new work — otherwise the
+  # Priority order matters. Reviewing first is what unblocks merges; gating and
+  # merging next is what turns approved work into landed work; verifying after
+  # that is what closes issues. Only then do we start new work — otherwise the
   # backlog grows faster than it drains and nothing ever reaches qa:done.
 
   # 1. Review open PRs whose head has moved since the last review.
   PR=$(pick_pr)
   if [ -n "$PR" ]; then run_review "$PR"; DID=1; fi
 
-  # 2. Verify merged fixes on dev.
+  # 2. Gate approved PRs in the browser, then merge them.
+  #
+  # Ahead of verification on purpose. An issue here is holding an OPEN PR, and an
+  # open PR rots against `dev` — every fix that lands meanwhile is another chance
+  # for it to go DIRTY and need a conflict round trip. Landing it is what turns
+  # approved work into merged work; verification can wait one cycle, an ageing
+  # branch cannot.
+  if [ "$DID" = "0" ]; then
+    I=$(first_with "$L_PREMERGE")
+    if [ -n "$I" ]; then run_premerge "$I"; DID=1; fi
+  fi
+
+  # 3. Verify merged fixes on dev.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_VERIFY")
     if [ -n "$I" ]; then run_verify "$I"; DID=1; fi
   fi
 
-  # 3. Rework: code problems back to the implementer.
+  # 4. Rework: code problems back to the implementer.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_IMPL")
     if [ -n "$I" ]; then
@@ -697,7 +712,7 @@ while true; do
     fi
   fi
 
-  # 4. Rework: briefing problems back to the curator.
+  # 5. Rework: briefing problems back to the curator.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_SPEC")
     if [ -n "$I" ]; then
@@ -708,13 +723,13 @@ while true; do
     fi
   fi
 
-  # 5. Implement curated issues.
+  # 6. Implement curated issues.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_READY")
     if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
   fi
 
-  # 6. Backlog empty: that closes a loop. Run the critic to find the next batch.
+  # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
     # Trustworthy by construction: the cycle already aborted if the snapshot this
     # counts could not be read.

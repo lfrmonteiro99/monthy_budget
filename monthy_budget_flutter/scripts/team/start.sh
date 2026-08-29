@@ -78,7 +78,7 @@ case "$ACTION" in
     bash "$SCRIPT_DIR/serve-app.sh" "$BASE_BRANCH" --status 2>/dev/null || true
     echo "loops concluídos: $(cat "$STATE_DIR/loops-completed" 2>/dev/null || echo 0)"
     echo -n "issues por estado: "
-    for s in qa:triage qa:ready qa:wip qa:review qa:verify qa:blocked-impl qa:blocked-spec qa:needs-human; do
+    for s in qa:triage qa:ready qa:wip qa:review qa:premerge qa:verify qa:blocked-impl qa:blocked-spec qa:needs-human; do
       n=$(gh issue list --repo "$REPO" --label "$s" --state open --json number --jq 'length' 2>/dev/null || echo 0)
       [ "$n" != "0" ] && printf '%s=%s ' "$s" "$n"
     done
