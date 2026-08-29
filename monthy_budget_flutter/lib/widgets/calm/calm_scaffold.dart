@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:monthly_management/theme/app_colors.dart';
 
 /// A thin `Scaffold` wrapper that applies the Calm design baseline:
@@ -102,10 +103,7 @@ class CalmScaffold extends StatelessWidget {
       body: SafeArea(
         top: true,
         bottom: true,
-        child: Padding(
-          padding: bodyPadding,
-          child: body,
-        ),
+        child: Padding(padding: bodyPadding, child: body),
       ),
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
@@ -137,11 +135,7 @@ class CalmScaffold extends StatelessWidget {
 /// for where the reservation must be anchored (same `Scaffold` as the FAB,
 /// not a screen nested deeper down).
 class FabClearance extends StatelessWidget {
-  const FabClearance({
-    super.key,
-    required this.reserve,
-    required this.child,
-  });
+  const FabClearance({super.key, required this.reserve, required this.child});
 
   /// Whether a FAB floats over this same `Scaffold`. When false, [child] is
   /// returned without any bottom reservation.
@@ -161,5 +155,39 @@ class FabClearance extends StatelessWidget {
             child: child,
           )
         : child;
+  }
+}
+
+/// Pins Tab/traversal order for a region of the OUTER `Scaffold`'s chrome
+/// (content / `floatingActionButton` / `bottomNavigationBar`) to a fixed
+/// [order], independent of paint geometry (#1310).
+///
+/// Without an explicit sort key, Flutter's web semantics tree orders
+/// siblings by paint position. The dashboard tab's content lives in a
+/// `SingleChildScrollView` nested under this same `Scaffold`; the FAB and
+/// `bottomNavigationBar` are fixed chrome that never move. When Tab moves
+/// focus to a control outside the viewport, the engine scrolls that
+/// `SingleChildScrollView` to bring it into view, which shifts content's
+/// paint position relative to the FAB/nav — and without a sort key, the
+/// browser's Tab order is recomputed from that shifted geometry on every
+/// such scroll, repeating the FAB and the first nav destination and
+/// eventually escaping into the engine's internal DOM
+/// (`<body>`/`<flutter-view>`).
+///
+/// Wrap each of the three chrome regions with an ascending [order]
+/// (content=0, FAB=1, bottomNavigationBar=2) so Tab always traverses
+/// content → FAB → bottom nav, regardless of scroll position.
+class ChromeFocusOrder extends StatelessWidget {
+  const ChromeFocusOrder({super.key, required this.order, required this.child});
+
+  /// Position of this region among its `Scaffold` chrome siblings — lower
+  /// values are reached first by Tab.
+  final double order;
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(sortKey: OrdinalSortKey(order), child: child);
   }
 }
