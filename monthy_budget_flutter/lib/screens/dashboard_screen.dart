@@ -134,7 +134,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BudgetSummary get summary => widget.summary;
   PurchaseHistory get purchaseHistory => widget.purchaseHistory;
   LocalDashboardConfig get dashboardConfig => widget.dashboardConfig;
-  Map<String, List<ExpenseSnapshot>> get expenseHistory => widget.expenseHistory;
+  Map<String, List<ExpenseSnapshot>> get expenseHistory =>
+      widget.expenseHistory;
   List<ActualExpense> get actualExpenses => widget.actualExpenses;
   List<SavingsGoal> get savingsGoals => widget.savingsGoals;
   Map<String, SavingsProjection> get savingsProjections =>
@@ -195,8 +196,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // "gasto do mês" — see #1217. summary.totalExpenses/netLiquidity are
     // BUDGETED figures and must not be used for either.
     final categoryBudgetSummaries = _buildCategoryBudgetSummaries();
-    final totalActualExpenses =
-        categoryBudgetSummaries.fold(0.0, (s, e) => s + e.actual);
+    final totalActualExpenses = categoryBudgetSummaries.fold(
+      0.0,
+      (s, e) => s + e.actual,
+    );
     final netLiquidity = summary.totalNetWithMeal - totalActualExpenses;
     final isPositive = netLiquidity >= 0;
 
@@ -233,42 +236,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
     }
 
-    return CalmScaffold(
-      body: RefreshIndicator(
-        color: AppColors.ink(context),
-        onRefresh: () async => onSnapshotExpenses(),
-        // The dashboard tab's FAB (QuickAddLauncher) is injected by the
-        // parent Scaffold in app_home.dart, outside this widget's own reach,
-        // and this screen sits inside DashboardContainer's own Column
-        // (TrialBanner / CriticalAlertBanner above, AdBannerWidget below).
-        // Reserving the FAB's footprint HERE would anchor it to this
-        // screen's bottom edge, which only coincides with the FAB's
-        // reference edge (the outer Scaffold's body bottom) when the
-        // container's siblings all render at zero height — and a bottom
-        // sibling (the ad banner) would itself fall in the FAB's band. The
-        // clearance is instead reserved once, in app_home.dart, around the
-        // same Expanded(child: content) the FAB itself floats over — see
-        // CalmScaffold.fabBottomClearance's doc-comment. Do not re-add
-        // local bottom padding here.
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildCalmHeader(context, l10n),
-              const SizedBox(height: 24),
-              if (hasData && dashboardConfig.showHeroCard)
-                _buildHero(context, isPositive, l10n, totalActualExpenses)
-              else if (!hasData)
-                _buildEmptyState(context, l10n),
-              const SizedBox(height: 24),
-              if (hasData) ...[
-                for (final cardId in dashboardConfig.cardOrder)
-                  if (cardId != 'heroCard')
-                    ..._buildCardById(cardId, context, stressResult,
-                        monthReview, l10n, categoryBudgetSummaries),
-                const SizedBox(height: 16),
-              ],
-            ],
+    // #1310: no own Scaffold here — a Scaffold nested inside app_home.dart's
+    // outer Scaffold (which owns the dashboard tab's FAB/bottomNavigationBar)
+    // is a second Material/semantics boundary the web focus-order algorithm
+    // has to reconcile with the outer one on every Tab-triggered scroll,
+    // which is what produced the repeated-FAB / DOM-escape loop. SafeArea +
+    // Padding replicates exactly what CalmScaffold.build does when `title`
+    // is null (see calm_scaffold.dart), without opening that second Scaffold.
+    //
+    // The transparent Material still has to be here, though: InkWell/InkResponse
+    // descendants (chart info icons, list tiles, ...) require a Material
+    // ancestor, which Scaffold used to provide implicitly. `transparency`
+    // paints nothing — app_home.dart's outer Scaffold already paints the
+    // matching background via `Theme.scaffoldBackgroundColor` (= AppColors.bg,
+    // see app_theme.dart), so this doesn't double-paint or change the tab's
+    // visible background.
+    return Material(
+      type: MaterialType.transparency,
+      child: SafeArea(
+        top: true,
+        bottom: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: RefreshIndicator(
+            color: AppColors.ink(context),
+            onRefresh: () async => onSnapshotExpenses(),
+            // The dashboard tab's FAB (QuickAddLauncher) is injected by the
+            // parent Scaffold in app_home.dart, outside this widget's own reach,
+            // and this screen sits inside DashboardContainer's own Column
+            // (TrialBanner / CriticalAlertBanner above, AdBannerWidget below).
+            // Reserving the FAB's footprint HERE would anchor it to this
+            // screen's bottom edge, which only coincides with the FAB's
+            // reference edge (the outer Scaffold's body bottom) when the
+            // container's siblings all render at zero height — and a bottom
+            // sibling (the ad banner) would itself fall in the FAB's band. The
+            // clearance is instead reserved once, in app_home.dart, around the
+            // same Expanded(child: content) the FAB itself floats over — see
+            // CalmScaffold.fabBottomClearance's doc-comment. Do not re-add
+            // local bottom padding here.
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildCalmHeader(context, l10n),
+                  const SizedBox(height: 24),
+                  if (hasData && dashboardConfig.showHeroCard)
+                    _buildHero(context, isPositive, l10n, totalActualExpenses)
+                  else if (!hasData)
+                    _buildEmptyState(context, l10n),
+                  const SizedBox(height: 24),
+                  if (hasData) ...[
+                    for (final cardId in dashboardConfig.cardOrder)
+                      if (cardId != 'heroCard')
+                        ..._buildCardById(
+                          cardId,
+                          context,
+                          stressResult,
+                          monthReview,
+                          l10n,
+                          categoryBudgetSummaries,
+                        ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -279,8 +311,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildCalmHeader(BuildContext context, S l10n) {
     final now = DateTime.now();
-    final monthLabel =
-        '${localizedMonthFull(l10n, now.month)} ${now.year}';
+    final monthLabel = '${localizedMonthFull(l10n, now.month)} ${now.year}';
 
     final eyebrow = widget.householdName.isNotEmpty
         ? widget.householdName.toUpperCase()
@@ -300,7 +331,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: AppColors.ink70(context),
             ),
           ),
-          onPressed: widget.onOpenNotificationSettings ??
+          onPressed:
+              widget.onOpenNotificationSettings ??
               () => _openNotificationSettings(context),
         ),
         Tooltip(
@@ -353,8 +385,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────────────── Hero ──────────────────────────────────
 
-  Widget _buildHero(BuildContext context, bool isPositive, S l10n,
-      double totalActualExpenses) {
+  Widget _buildHero(
+    BuildContext context,
+    bool isPositive,
+    S l10n,
+    double totalActualExpenses,
+  ) {
     final now = DateTime.now();
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final daysPassed = now.day;
@@ -366,7 +402,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final spent = totalActualExpenses;
     final remaining = totalBudget - spent;
     final isOverBudget = remaining < 0;
-    final onTrack = totalBudget <= 0 ||
+    final onTrack =
+        totalBudget <= 0 ||
         (daysPassed > 0
             ? spent / daysPassed <= totalBudget / daysInMonth
             : true);
@@ -425,8 +462,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           if (totalBudget > 0) ...[
             LayoutBuilder(
               builder: (context, constraints) {
-                final paceLeft =
-                    (constraints.maxWidth * pacePct / 100) - 0.5;
+                final paceLeft = (constraints.maxWidth * pacePct / 100) - 0.5;
                 return Stack(
                   children: [
                     ClipRRect(
@@ -460,11 +496,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text(
                   l10n.dashboardHeroSpentLabel(formatCurrency(spent)),
-                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.ink50(context),
+                  ),
                 ),
                 Text(
                   l10n.dashboardHeroBudgetLabel(formatCurrency(totalBudget)),
-                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.ink50(context),
+                  ),
                 ),
               ],
             ),
@@ -555,8 +597,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 16),
         ];
       case 'upcomingBills':
-        if (!recurringExpenses
-            .any((r) => r.isActive && r.dayOfMonth != null)) {
+        if (!recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) {
           return const [];
         }
         return [
@@ -573,23 +614,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (summary.totalExpenses <= 0) return const [];
         return [
           _buildTopCategoriesCard(context, l10n),
-          const SizedBox(height: 16)
+          const SizedBox(height: 16),
         ];
       case 'cashFlowForecast':
         return [
           _buildCashFlowForecastCard(context, l10n),
-          const SizedBox(height: 16)
+          const SizedBox(height: 16),
         ];
       case 'savingsRate':
         return [
           _buildSavingsRateCard(context, l10n),
-          const SizedBox(height: 16)
+          const SizedBox(height: 16),
         ];
       case 'coachInsight':
         if (widget.onOpenCoach == null) return const [];
         return [
           _buildCoachInsightCard(context, l10n),
-          const SizedBox(height: 16)
+          const SizedBox(height: 16),
         ];
       case 'summaryCards':
         return [_buildSummaryCards(l10n), const SizedBox(height: 16)];
@@ -626,15 +667,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return [_buildTaxDeductionCard(context), const SizedBox(height: 16)];
       case 'purchaseHistory':
         if (purchaseHistory.records.isEmpty) return const [];
-        return [
-          _buildPurchaseHistoryCard(context),
-          const SizedBox(height: 16)
-        ];
+        return [_buildPurchaseHistoryCard(context), const SizedBox(height: 16)];
       case 'expensesBreakdown':
         if (summary.totalExpenses <= 0) return const [];
         return [
           _buildExpensesBreakdown(context, l10n),
-          const SizedBox(height: 16)
+          const SizedBox(height: 16),
         ];
       case 'charts':
         return [
@@ -646,7 +684,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 16),
         ];
       case 'quickActions':
-        return [_buildNextActionsCard(context, l10n), const SizedBox(height: 16)];
+        return [
+          _buildNextActionsCard(context, l10n),
+          const SizedBox(height: 16),
+        ];
       default:
         return const [];
     }
@@ -721,8 +762,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final spent = summary.totalExpenses;
     final remaining = totalBudget - spent;
     final dailyAvgSpend = daysPassed > 0 ? spent / daysPassed : 0.0;
-    final dailyBudgetAllowance =
-        daysRemaining > 0 ? remaining / daysRemaining : 0.0;
+    final dailyBudgetAllowance = daysRemaining > 0
+        ? remaining / daysRemaining
+        : 0.0;
     final isOverBudget = remaining < 0;
     final onTrack = dailyAvgSpend <= (totalBudget / daysInMonth);
     final paceLabel = onTrack
@@ -752,7 +794,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ? (spent / totalBudget).clamp(0.0, 1.0)
                   : 0.0,
               backgroundColor: AppColors.bgSunk(context),
-              color: isOverBudget ? AppColors.bad(context) : AppColors.ink(context),
+              color: isOverBudget
+                  ? AppColors.bad(context)
+                  : AppColors.ink(context),
               minHeight: 6,
             ),
           ),
@@ -760,17 +804,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             children: [
               Expanded(
-                  child: _miniStat(l10n.dashboardBurnRateDailyAvg,
-                      formatCurrency(dailyAvgSpend), context)),
+                child: _miniStat(
+                  l10n.dashboardBurnRateDailyAvg,
+                  formatCurrency(dailyAvgSpend),
+                  context,
+                ),
+              ),
               Expanded(
-                  child: _miniStat(
-                      l10n.dashboardBurnRateAllowance,
-                      formatCurrency(
-                          dailyBudgetAllowance > 0 ? dailyBudgetAllowance : 0),
-                      context)),
+                child: _miniStat(
+                  l10n.dashboardBurnRateAllowance,
+                  formatCurrency(
+                    dailyBudgetAllowance > 0 ? dailyBudgetAllowance : 0,
+                  ),
+                  context,
+                ),
+              ),
               Expanded(
-                  child: _miniStat(l10n.dashboardBurnRateDaysLeft,
-                      '$daysRemaining', context)),
+                child: _miniStat(
+                  l10n.dashboardBurnRateDaysLeft,
+                  '$daysRemaining',
+                  context,
+                ),
+              ),
             ],
           ),
         ],
@@ -797,8 +852,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildTopCategoriesCard(BuildContext context, S l10n) {
     final categoryTotals = <String, double>{};
     for (final e in actualExpenses) {
-      categoryTotals[e.category] =
-          (categoryTotals[e.category] ?? 0) + e.amount;
+      categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
     }
     // Merge food purchase history into 'alimentacao', same as
     // _buildCategoryBudgetSummaries() does for the Orçamento vs Real card —
@@ -820,8 +874,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.pie_chart_outline,
-                  size: 18, color: AppColors.accent(context)),
+              Icon(
+                Icons.pie_chart_outline,
+                size: 18,
+                color: AppColors.accent(context),
+              ),
               const SizedBox(width: 8),
               CalmEyebrow(l10n.dashboardTopCategoriesTitle.toUpperCase()),
             ],
@@ -877,16 +934,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         .where((r) => r.isActive)
         .fold(0.0, (sum, r) => sum + r.amount);
     final recurringRemaining = recurringExpenses
-        .where((r) =>
-            r.isActive && r.dayOfMonth != null && r.dayOfMonth! > daysPassed)
+        .where(
+          (r) =>
+              r.isActive && r.dayOfMonth != null && r.dayOfMonth! > daysPassed,
+        )
         .fold(0.0, (sum, r) => sum + r.amount);
     final dailyDiscretionary = daysPassed > 0
-        ? (currentSpent - (recurringTotal - recurringRemaining))
-                .clamp(0.0, double.infinity) /
-            daysPassed
+        ? (currentSpent - (recurringTotal - recurringRemaining)).clamp(
+                0.0,
+                double.infinity,
+              ) /
+              daysPassed
         : 0.0;
     final projectedSpend =
-        currentSpent + recurringRemaining + (dailyDiscretionary * daysRemaining);
+        currentSpent +
+        recurringRemaining +
+        (dailyDiscretionary * daysRemaining);
     final projectedBalance = monthlyIncome - projectedSpend;
     final isPositive = projectedBalance >= 0;
     final color = isPositive ? AppColors.ok(context) : AppColors.bad(context);
@@ -919,13 +982,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Text(
                       l10n.dashboardCashFlowEndOfMonth,
                       style: TextStyle(
-                          fontSize: 10, color: AppColors.ink50(context)),
+                        fontSize: 10,
+                        color: AppColors.ink50(context),
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       formatCurrency(projectedBalance),
-                      style: CalmText.amount(context, size: 15)
-                          .copyWith(color: color),
+                      style: CalmText.amount(
+                        context,
+                        size: 15,
+                      ).copyWith(color: color),
                     ),
                   ],
                 ),
@@ -936,7 +1003,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 8),
             Text(
               l10n.dashboardCashFlowPendingBills(
-                  formatCurrency(recurringRemaining)),
+                formatCurrency(recurringRemaining),
+              ),
               style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
             ),
           ],
@@ -957,8 +1025,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final rateColor = ratePct >= 20
         ? AppColors.ok(context)
         : ratePct >= 10
-            ? AppColors.warn(context)
-            : AppColors.bad(context);
+        ? AppColors.warn(context)
+        : AppColors.bad(context);
 
     // Build 6-month trend from actualExpenseHistory.
     final now = DateTime.now();
@@ -986,12 +1054,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: CalmEyebrow(
-                    l10n.dashboardSavingsRateTitle.toUpperCase()),
+                  l10n.dashboardSavingsRateTitle.toUpperCase(),
+                ),
               ),
               Text(
                 formatPercentage(currentRate),
-                style: CalmText.amount(context, size: 18)
-                    .copyWith(color: rateColor),
+                style: CalmText.amount(
+                  context,
+                  size: 18,
+                ).copyWith(color: rateColor),
               ),
             ],
           ),
@@ -1007,13 +1078,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: monthRates.entries.map((e) {
-                  final barHeight =
-                      (e.value.clamp(0, 100) / 100 * 36).clamp(2.0, 36.0);
+                  final barHeight = (e.value.clamp(0, 100) / 100 * 36).clamp(
+                    2.0,
+                    36.0,
+                  );
                   final barColor = e.value >= 20
                       ? AppColors.ok(context)
                       : e.value >= 0
-                          ? AppColors.warn(context)
-                          : AppColors.bad(context);
+                      ? AppColors.warn(context)
+                      : AppColors.bad(context);
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -1070,8 +1143,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: AppColors.accentSoft(context),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(insightIcon,
-                size: 20, color: AppColors.accent(context)),
+            child: Icon(
+              insightIcon,
+              size: 20,
+              color: AppColors.accent(context),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1082,14 +1158,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 4),
                 Text(
                   insight,
-                  style:
-                      TextStyle(fontSize: 13, color: AppColors.ink70(context)),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.ink70(context),
+                  ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right,
-              size: 20, color: AppColors.ink50(context)),
+          Icon(Icons.chevron_right, size: 20, color: AppColors.ink50(context)),
         ],
       ),
     );
@@ -1122,7 +1199,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 value: formatCurrency(summary.totalNetWithMeal),
                 sublabel: summary.totalMealAllowance > 0
                     ? l10n.dashboardInclMealAllowance(
-                        formatCurrency(summary.totalMealAllowance))
+                        formatCurrency(summary.totalMealAllowance),
+                      )
                     : null,
                 accent: AppColors.ok,
                 onTap: openIncome,
@@ -1139,8 +1217,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 label: l10n.dashboardDeductions,
                 value: formatCurrency(summary.totalDeductions),
                 sublabel: l10n.dashboardIrsSs(
-                    formatCurrency(summary.totalIRS),
-                    formatCurrency(summary.totalSS)),
+                  formatCurrency(summary.totalIRS),
+                  formatCurrency(summary.totalSS),
+                ),
                 accent: AppColors.warn,
                 onTap: openTaxSimulator,
               ),
@@ -1151,9 +1230,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: Icons.savings_outlined,
                 label: l10n.dashboardSavingsRate,
                 value: formatPercentage(
-                    summary.savingsRate > 0 ? summary.savingsRate : 0),
+                  summary.savingsRate > 0 ? summary.savingsRate : 0,
+                ),
                 sublabel: l10n.dashboardExpensesAmount(
-                    formatCurrency(summary.totalExpenses)),
+                  formatCurrency(summary.totalExpenses),
+                ),
                 accent: AppColors.accent,
                 onTap: openSavings,
               ),
@@ -1177,8 +1258,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: CalmEyebrow(l10n.dashboardSalaryDetail.toUpperCase()),
               ),
               InfoIconButton(
-                  title: l10n.dashboardSalaryDetail,
-                  body: l10n.infoSalaryBreakdown),
+                title: l10n.dashboardSalaryDetail,
+                body: l10n.infoSalaryBreakdown,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -1187,7 +1269,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             final hasGross = calc.effectiveGrossAmount > 0;
             final hasAnyIncome = hasGross || calc.otherExemptIncome > 0;
             if (!hasAnyIncome) return const SizedBox.shrink();
-            final label = i < settings.salaries.length &&
+            final label =
+                i < settings.salaries.length &&
                     settings.salaries[i].label.isNotEmpty
                 ? settings.salaries[i].label
                 : l10n.dashboardSalaryN(i + 1);
@@ -1196,7 +1279,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: hasGross
                   ? _SalaryRow(label: label, calc: calc)
                   : _ExemptIncomeRow(
-                      label: label, amount: calc.otherExemptIncome),
+                      label: label,
+                      amount: calc.otherExemptIncome,
+                    ),
             );
           }),
         ],
@@ -1212,18 +1297,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: onViewTrends,
       child: Row(
         children: [
-          Icon(Icons.trending_up,
-              size: 20, color: AppColors.accent(context)),
+          Icon(Icons.trending_up, size: 20, color: AppColors.accent(context)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               l10n.expenseTrends,
-              style: CalmText.amount(context, size: 14,
-                  weight: FontWeight.w600),
+              style: CalmText.amount(
+                context,
+                size: 14,
+                weight: FontWeight.w600,
+              ),
             ),
           ),
-          Icon(Icons.chevron_right,
-              size: 20, color: AppColors.ink50(context)),
+          Icon(Icons.chevron_right, size: 20, color: AppColors.ink50(context)),
         ],
       ),
     );
@@ -1239,18 +1325,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       child: Row(
         children: [
-          Icon(Icons.calculate_outlined,
-              size: 20, color: AppColors.accent(context)),
+          Icon(
+            Icons.calculate_outlined,
+            size: 20,
+            color: AppColors.accent(context),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               l10n.taxSimButton,
-              style: CalmText.amount(context, size: 14,
-                  weight: FontWeight.w600),
+              style: CalmText.amount(
+                context,
+                size: 14,
+                weight: FontWeight.w600,
+              ),
             ),
           ),
-          Icon(Icons.chevron_right,
-              size: 20, color: AppColors.ink50(context)),
+          Icon(Icons.chevron_right, size: 20, color: AppColors.ink50(context)),
         ],
       ),
     );
@@ -1328,106 +1419,128 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBudgetVsActualCard(
-      BuildContext context, List<CategoryBudgetSummary> summaries) {
+    BuildContext context,
+    List<CategoryBudgetSummary> summaries,
+  ) {
     final l10n = S.of(context);
     final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
     final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);
 
     final unsetCount = settings.expenses
-        .where((e) =>
-            e.enabled && e.amount == 0 && !monthlyBudgets.containsKey(e.category))
+        .where(
+          (e) =>
+              e.enabled &&
+              e.amount == 0 &&
+              !monthlyBudgets.containsKey(e.category),
+        )
         .map((e) => e.category)
         .toSet()
         .length;
 
-    final visible =
-        summaries.where((s) => s.actual > 0 || s.budgeted > 0).take(6).toList();
+    final visible = summaries
+        .where((s) => s.actual > 0 || s.budgeted > 0)
+        .take(6)
+        .toList();
 
     return CalmCard(
       key: DashboardTourKeys.budgetVsActual,
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.compare_arrows,
-                    size: 16, color: AppColors.ink70(context)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CalmEyebrow(l10n.expenseTrackerTitle.toUpperCase()),
-                ),
-                InfoIconButton(
-                    title: l10n.expenseTrackerTitle,
-                    body: l10n.infoBudgetVsActual),
-                TextButton(
-                  onPressed: onOpenExpenseTracker,
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.accent(context),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    minimumSize: const Size(48, 40),
-                    textStyle: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                  child: Text(l10n.expenseTrackerViewAll),
-                ),
-              ],
-            ),
-            if (unsetCount > 0) ...[
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: onOpenSettings,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.warn(context).withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                        color: AppColors.warn(context).withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline,
-                          size: 14, color: AppColors.warn(context)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          l10n.unsetBudgetsWarning(unsetCount),
-                          style: TextStyle(
-                              fontSize: 11, color: AppColors.warn(context)),
-                        ),
-                      ),
-                      Text(
-                        l10n.unsetBudgetsCta,
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.warn(context)),
-                      ),
-                    ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.compare_arrows,
+                size: 16,
+                color: AppColors.ink70(context),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: CalmEyebrow(l10n.expenseTrackerTitle.toUpperCase()),
+              ),
+              InfoIconButton(
+                title: l10n.expenseTrackerTitle,
+                body: l10n.infoBudgetVsActual,
+              ),
+              TextButton(
+                onPressed: onOpenExpenseTracker,
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.accent(context),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
+                  textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                child: Text(l10n.expenseTrackerViewAll),
               ),
             ],
-            if (visible.isEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                l10n.expenseTrackerNoExpenses,
-                style:
-                    TextStyle(fontSize: 13, color: AppColors.ink50(context)),
-              ),
-            ] else ...[
-              const SizedBox(height: 12),
-              ...visible.map((s) {
-                final progressColor = s.isOver
-                    ? AppColors.bad(context)
-                    : s.progress > 0.8
-                        ? AppColors.warn(context)
-                        : AppColors.ok(context);
-                return InkWell(
-                  onTap: widget.onOpenExpenseTracker,
+          ),
+          if (unsetCount > 0) ...[
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: onOpenSettings,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.warn(context).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
-                  child: Padding(
+                  border: Border.all(
+                    color: AppColors.warn(context).withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: AppColors.warn(context),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.unsetBudgetsWarning(unsetCount),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.warn(context),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      l10n.unsetBudgetsCta,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.warn(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          if (visible.isEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              l10n.expenseTrackerNoExpenses,
+              style: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
+            ),
+          ] else ...[
+            const SizedBox(height: 12),
+            ...visible.map((s) {
+              final progressColor = s.isOver
+                  ? AppColors.bad(context)
+                  : s.progress > 0.8
+                  ? AppColors.warn(context)
+                  : AppColors.ok(context);
+              return InkWell(
+                onTap: widget.onOpenExpenseTracker,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1435,8 +1548,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Row(
                         children: [
                           Icon(
-                            _budgetCategoryIcon(s.category,
-                                customCategories: widget.customCategories),
+                            _budgetCategoryIcon(
+                              s.category,
+                              customCategories: widget.customCategories,
+                            ),
                             size: 14,
                             color: AppColors.ink70(context),
                           ),
@@ -1445,9 +1560,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Text(
                               _budgetCategoryLabel(s.category, l10n),
                               style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.ink(context)),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.ink(context),
+                              ),
                             ),
                           ),
                           if (s.isOverPace && !s.isOver)
@@ -1488,13 +1604,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             '${formatCurrency(s.actual)} / ${formatCurrency(s.budgeted)}',
                             style: TextStyle(
-                                fontSize: 10,
-                                color: AppColors.ink50(context)),
+                              fontSize: 10,
+                              color: AppColors.ink50(context),
+                            ),
                           ),
                           if (s.isOverPace && s.budgeted > 0)
                             Text(
                               l10n.paceProjected(
-                                  formatCurrency(s.projectedTotal)),
+                                formatCurrency(s.projectedTotal),
+                              ),
                               style: TextStyle(
                                 fontSize: 10,
                                 color: s.paceSeverity == 'warning'
@@ -1506,34 +1624,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
+                ),
+              );
+            }),
+            Divider(height: 16, color: AppColors.line(context)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${l10n.expenseTrackerBudgeted}: ${formatCurrency(totalBudgeted)}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink70(context),
                   ),
-                );
-              }),
-              Divider(height: 16, color: AppColors.line(context)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${l10n.expenseTrackerBudgeted}: ${formatCurrency(totalBudgeted)}',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.ink70(context)),
+                ),
+                Text(
+                  '${l10n.expenseTrackerActual}: ${formatCurrency(totalActual)}',
+                  style: CalmText.amount(context, size: 12).copyWith(
+                    color: totalActual > totalBudgeted
+                        ? AppColors.bad(context)
+                        : AppColors.ink(context),
                   ),
-                  Text(
-                    '${l10n.expenseTrackerActual}: ${formatCurrency(totalActual)}',
-                    style: CalmText.amount(context, size: 12).copyWith(
-                      color: totalActual > totalBudgeted
-                          ? AppColors.bad(context)
-                          : AppColors.ink(context),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ],
-        ),
-      );
+        ],
+      ),
+    );
   }
 
   static IconData _budgetCategoryIcon(
@@ -1563,12 +1682,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.receipt_long_outlined,
-                  size: 16, color: AppColors.ink70(context)),
+              Icon(
+                Icons.receipt_long_outlined,
+                size: 16,
+                color: AppColors.ink70(context),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                child: CalmEyebrow(
-                    l10n.dashboardPurchaseHistory.toUpperCase()),
+                child: CalmEyebrow(l10n.dashboardPurchaseHistory.toUpperCase()),
               ),
               TextButton(
                 onPressed: () => _showAllHistory(context),
@@ -1577,7 +1698,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   minimumSize: const Size(48, 40),
                   textStyle: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 child: Text(l10n.dashboardViewAll),
               ),
@@ -1601,55 +1724,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: () => _showAllHistory(context),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.bgSunk(context),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                '${r.date.day}/${r.date.month}',
-                style: TextStyle(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.bgSunk(context),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  '${r.date.day}/${r.date.month}',
+                  style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.ink70(context)),
+                    color: AppColors.ink70(context),
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.dashboardProductCount(r.itemCount),
-                  style: TextStyle(
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.dashboardProductCount(r.itemCount),
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.ink(context)),
-                ),
-                Text(
-                  summary,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 12, color: AppColors.ink50(context)),
-                ),
-              ],
+                      color: AppColors.ink(context),
+                    ),
+                  ),
+                  Text(
+                    summary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.ink50(context),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            formatCurrency(r.amount),
-            style: CalmText.amount(context, size: 14),
-          ),
-        ],
-      ),
+            const SizedBox(width: 8),
+            Text(
+              formatCurrency(r.amount),
+              style: CalmText.amount(context, size: 14),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1680,7 +1807,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   final isExpanded = expandedMap[i] ?? false;
                   return Semantics(
                     button: true,
-                    label: S.of(context).dashboardPurchaseLabel(
+                    label: S
+                        .of(context)
+                        .dashboardPurchaseLabel(
                           '${r.date.day}/${r.date.month}/${r.date.year}',
                           formatCurrency(r.amount),
                         ),
@@ -1688,8 +1817,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: AppColors.card(itemContext),
                       borderRadius: BorderRadius.circular(12),
                       child: InkWell(
-                        onTap: () => setLocalState(
-                            () => expandedMap[i] = !isExpanded),
+                        onTap: () =>
+                            setLocalState(() => expandedMap[i] = !isExpanded),
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),
@@ -1697,7 +1826,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: AppColors.line(itemContext)),
+                              color: AppColors.line(itemContext),
+                            ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1709,16 +1839,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   Text(
                                     '${r.date.day}/${r.date.month}/${r.date.year}',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.ink70(itemContext)),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.ink70(itemContext),
+                                    ),
                                   ),
                                   Row(
                                     children: [
                                       Text(
                                         formatCurrency(r.amount),
-                                        style: CalmText.amount(itemContext,
-                                            size: 15),
+                                        style: CalmText.amount(
+                                          itemContext,
+                                          size: 15,
+                                        ),
                                       ),
                                       const SizedBox(width: 6),
                                       Icon(
@@ -1736,33 +1869,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Text(
-                                    S.of(context)
+                                    S
+                                        .of(context)
                                         .dashboardProductCount(r.itemCount),
                                     style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.ink50(itemContext)),
+                                      fontSize: 12,
+                                      color: AppColors.ink50(itemContext),
+                                    ),
                                   ),
                                 ),
                               if (isExpanded && r.items.isNotEmpty) ...[
                                 const SizedBox(height: 8),
-                                ...r.items.map((name) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 3),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.circle,
-                                              size: 4,
-                                              color: AppColors.ink50(
-                                                  itemContext)),
-                                          const SizedBox(width: 8),
-                                          Text(name,
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: AppColors.ink70(
-                                                      itemContext))),
-                                        ],
-                                      ),
-                                    )),
+                                ...r.items.map(
+                                  (name) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          size: 4,
+                                          color: AppColors.ink50(itemContext),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          name,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: AppColors.ink70(itemContext),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ],
                           ),
@@ -1782,8 +1921,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ───────────────────────── Expenses Breakdown ────────────────────────────
 
   Widget _buildExpensesBreakdown(BuildContext context, S l10n) {
-    final activeExpenses =
-        settings.expenses.where((e) => e.enabled && e.amount > 0).toList();
+    final activeExpenses = settings.expenses
+        .where((e) => e.enabled && e.amount > 0)
+        .toList();
     return CalmCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1791,12 +1931,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Row(
             children: [
               Expanded(
-                child: CalmEyebrow(
-                    l10n.dashboardMonthlyExpenses.toUpperCase()),
+                child: CalmEyebrow(l10n.dashboardMonthlyExpenses.toUpperCase()),
               ),
               InfoIconButton(
-                  title: l10n.dashboardMonthlyExpenses,
-                  body: l10n.infoExpensesBreakdown),
+                title: l10n.dashboardMonthlyExpenses,
+                body: l10n.infoExpensesBreakdown,
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -1826,9 +1966,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               activeExpenses[i].label,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.ink(context)),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.ink(context),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -1837,8 +1978,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               categoryLabel(activeExpenses[i].category),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 11,
-                                  color: AppColors.ink50(context)),
+                                fontSize: 11,
+                                color: AppColors.ink50(context),
+                              ),
                             ),
                           ),
                         ],
@@ -1862,14 +2004,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Text(
                 l10n.dashboardTotal,
                 style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.ink70(context)),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.ink70(context),
+                ),
               ),
               Text(
                 formatCurrency(summary.totalExpenses),
-                style: CalmText.amount(context, size: 14, weight: FontWeight.w700)
-                    .copyWith(color: AppColors.bad(context)),
+                style: CalmText.amount(
+                  context,
+                  size: 14,
+                  weight: FontWeight.w700,
+                ).copyWith(color: AppColors.bad(context)),
               ),
             ],
           ),
@@ -1922,18 +2068,21 @@ class _SummaryCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: AppColors.ink50(context)),
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: AppColors.ink50(context),
+            ),
           ),
           const SizedBox(height: 2),
-          Text(value, style: CalmText.amount(context, size: 16, weight: FontWeight.w700)),
+          Text(
+            value,
+            style: CalmText.amount(context, size: 16, weight: FontWeight.w700),
+          ),
           if (sublabel != null) ...[
             const SizedBox(height: 4),
             Text(
               sublabel!,
-              style: TextStyle(
-                  fontSize: 10, color: AppColors.ink50(context)),
+              style: TextStyle(fontSize: 10, color: AppColors.ink50(context)),
             ),
           ],
         ],
@@ -2002,19 +2151,23 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                     const SizedBox(height: 6),
                     Text(
                       '${result.score}',
-                      style: CalmText.amount(context,
-                              size: 32, weight: FontWeight.w700)
-                          .copyWith(color: color),
+                      style: CalmText.amount(
+                        context,
+                        size: 32,
+                        weight: FontWeight.w700,
+                      ).copyWith(color: color),
                     ),
                     if (result.delta != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
                           l10n.dashboardVsLastMonth(
-                              '${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)}'),
+                            '${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)}',
+                          ),
                           style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.ink50(context)),
+                            fontSize: 12,
+                            color: AppColors.ink50(context),
+                          ),
                         ),
                       ),
                   ],
@@ -2039,7 +2192,9 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.ink70(context),
                   textStyle: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w500),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                   minimumSize: const Size(48, 40),
                 ),
               ),
@@ -2057,7 +2212,9 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.accent(context),
                     textStyle: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w500),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                     minimumSize: const Size(48, 40),
                   ),
                 ),
@@ -2067,34 +2224,38 @@ class _StressIndexCardState extends State<_StressIndexCard> {
           if (_expanded) ...[
             Divider(height: 1, color: AppColors.line(context)),
             const SizedBox(height: 10),
-            ...result.factors.map((f) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    children: [
-                      Icon(
-                        f.ok
-                            ? Icons.check_circle_outline
-                            : Icons.warning_amber_outlined,
-                        size: 16,
-                        color: f.ok
-                            ? AppColors.ok(context)
-                            : AppColors.warn(context),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          f.type.localizedLabel(l10n),
-                          style: TextStyle(
-                              fontSize: 13, color: AppColors.ink70(context)),
+            ...result.factors.map(
+              (f) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  children: [
+                    Icon(
+                      f.ok
+                          ? Icons.check_circle_outline
+                          : Icons.warning_amber_outlined,
+                      size: 16,
+                      color: f.ok
+                          ? AppColors.ok(context)
+                          : AppColors.warn(context),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        f.type.localizedLabel(l10n),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.ink70(context),
                         ),
                       ),
-                      Text(
-                        _localizedValueLabel(f, l10n),
-                        style: CalmText.amount(context, size: 13),
-                      ),
-                    ],
-                  ),
-                )),
+                    ),
+                    Text(
+                      _localizedValueLabel(f, l10n),
+                      style: CalmText.amount(context, size: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ],
       ),
@@ -2125,14 +2286,18 @@ class _SalaryRow extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.ink70(context)),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink70(context),
+                ),
               ),
               Text(
                 formatCurrency(calc.totalNetWithMeal),
-                style: CalmText.amount(context, size: 14, weight: FontWeight.w700)
-                    .copyWith(color: AppColors.ok(context)),
+                style: CalmText.amount(
+                  context,
+                  size: 14,
+                  weight: FontWeight.w700,
+                ).copyWith(color: AppColors.ok(context)),
               ),
             ],
           ),
@@ -2148,9 +2313,10 @@ class _SalaryRow extends StatelessWidget {
                           ? l10n.dashboardGrossWithSubsidy
                           : l10n.dashboardGross,
                       style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.ink50(context)),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.ink50(context),
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -2167,15 +2333,18 @@ class _SalaryRow extends StatelessWidget {
                     Text(
                       l10n.dashboardIrsRate(formatPercentage(calc.irsRate)),
                       style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.ink50(context)),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.ink50(context),
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '-${formatCurrency(calc.irsRetention)}',
-                      style: CalmText.amount(context, size: 11)
-                          .copyWith(color: AppColors.bad(context)),
+                      style: CalmText.amount(
+                        context,
+                        size: 11,
+                      ).copyWith(color: AppColors.bad(context)),
                     ),
                   ],
                 ),
@@ -2187,15 +2356,18 @@ class _SalaryRow extends StatelessWidget {
                     Text(
                       l10n.dashboardSsRate,
                       style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.ink50(context)),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.ink50(context),
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '-${formatCurrency(calc.socialSecurity)}',
-                      style: CalmText.amount(context, size: 11)
-                          .copyWith(color: AppColors.warn(context)),
+                      style: CalmText.amount(
+                        context,
+                        size: 11,
+                      ).copyWith(color: AppColors.warn(context)),
                     ),
                   ],
                 ),
@@ -2207,22 +2379,25 @@ class _SalaryRow extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(top: 12),
               decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(color: AppColors.line(context)))),
+                border: Border(top: BorderSide(color: AppColors.line(context))),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     l10n.dashboardMealAllowance,
                     style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.ink50(context)),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.ink50(context),
+                    ),
                   ),
                   Text(
                     '+${formatCurrency(calc.mealAllowance.netMealAllowance)}',
-                    style: CalmText.amount(context, size: 11)
-                        .copyWith(color: AppColors.ok(context)),
+                    style: CalmText.amount(
+                      context,
+                      size: 11,
+                    ).copyWith(color: AppColors.ok(context)),
                   ),
                 ],
               ),
@@ -2236,14 +2411,17 @@ class _SalaryRow extends StatelessWidget {
                 Text(
                   l10n.dashboardExemptIncome,
                   style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.ink50(context)),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.ink50(context),
+                  ),
                 ),
                 Text(
                   '+${formatCurrency(calc.otherExemptIncome)}',
-                  style: CalmText.amount(context, size: 11)
-                      .copyWith(color: AppColors.ok(context)),
+                  style: CalmText.amount(
+                    context,
+                    size: 11,
+                  ).copyWith(color: AppColors.ok(context)),
                 ),
               ],
             ),
@@ -2273,22 +2451,24 @@ class _ExemptIncomeRow extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.ink70(context)),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.ink70(context),
+                ),
               ),
               const SizedBox(height: 2),
               Text(
                 l10n.dashboardExemptIncome,
-                style: TextStyle(
-                    fontSize: 10, color: AppColors.ink50(context)),
+                style: TextStyle(fontSize: 10, color: AppColors.ink50(context)),
               ),
             ],
           ),
           Text(
             '+${formatCurrency(amount)}',
-            style: CalmText.amount(context, size: 13)
-                .copyWith(color: AppColors.ok(context)),
+            style: CalmText.amount(
+              context,
+              size: 13,
+            ).copyWith(color: AppColors.ok(context)),
           ),
         ],
       ),
@@ -2318,18 +2498,23 @@ class _MonthReviewCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.assessment_outlined,
-                    size: 16, color: AppColors.ink70(context)),
+                Icon(
+                  Icons.assessment_outlined,
+                  size: 16,
+                  color: AppColors.ink70(context),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: CalmEyebrow(
                     '${review.monthLabel.toUpperCase()} ${l10n.dashboardSummaryLabel.toUpperCase()}',
                   ),
                 ),
-                InfoIconButton(
-                    title: l10n.monthReview, body: l10n.infoCharts),
-                Icon(Icons.chevron_right,
-                    size: 18, color: AppColors.ink70(context)),
+                InfoIconButton(title: l10n.monthReview, body: l10n.infoCharts),
+                Icon(
+                  Icons.chevron_right,
+                  size: 18,
+                  color: AppColors.ink70(context),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -2342,12 +2527,16 @@ class _MonthReviewCard extends StatelessWidget {
                       Text(
                         l10n.monthReviewPlanned,
                         style: TextStyle(
-                            fontSize: 10, color: AppColors.ink70(context)),
+                          fontSize: 10,
+                          color: AppColors.ink70(context),
+                        ),
                       ),
                       Text(
                         formatCurrency(review.totalPlanned),
-                        style: CalmText.amount(context, size: 14).copyWith(
-                            color: AppColors.ink70(context)),
+                        style: CalmText.amount(
+                          context,
+                          size: 14,
+                        ).copyWith(color: AppColors.ink70(context)),
                       ),
                     ],
                   ),
@@ -2359,7 +2548,9 @@ class _MonthReviewCard extends StatelessWidget {
                       Text(
                         l10n.monthReviewActual,
                         style: TextStyle(
-                            fontSize: 10, color: AppColors.ink70(context)),
+                          fontSize: 10,
+                          color: AppColors.ink70(context),
+                        ),
                       ),
                       Text(
                         formatCurrency(review.totalActual),
@@ -2375,17 +2566,22 @@ class _MonthReviewCard extends StatelessWidget {
                       Text(
                         l10n.monthReviewDifference,
                         style: TextStyle(
-                            fontSize: 10, color: AppColors.ink70(context)),
+                          fontSize: 10,
+                          color: AppColors.ink70(context),
+                        ),
                       ),
                       Text(
                         '${isOver ? '+' : ''}${formatCurrency(review.totalDifference)}',
-                        style: CalmText.amount(context,
-                                size: 14, weight: FontWeight.w700)
-                            .copyWith(
-                          color: isOver
-                              ? AppColors.bad(context)
-                              : AppColors.ok(context),
-                        ),
+                        style:
+                            CalmText.amount(
+                              context,
+                              size: 14,
+                              weight: FontWeight.w700,
+                            ).copyWith(
+                              color: isOver
+                                  ? AppColors.bad(context)
+                                  : AppColors.ok(context),
+                            ),
                       ),
                     ],
                   ),
