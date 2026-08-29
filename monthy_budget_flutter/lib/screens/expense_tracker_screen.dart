@@ -767,46 +767,71 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
           // Budget status pill
           Padding(
+            key: const Key('expenseTrackerBudgetStatusRow'),
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
               children: [
-                CalmPill(
-                  label: isOver
-                      ? '-${formatCurrency(diff.abs())}'
-                      : formatCurrency(diff),
-                  color: isOver
-                      ? AppColors.bad(context)
-                      : AppColors.ok(context),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    isOver
-                        ? l10n.expenseTrackerOver
-                        : l10n.expenseTrackerRemaining,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.ink70(context),
+                // Nested Wrap (not Row): if this group's own content is too
+                // wide for the available space (e.g. pill + the longest
+                // pt-PT status string, 'Acima do orçamento', barely doesn't
+                // fit at 430px with double-padding trimming the usable
+                // width to ~350px), it drops the label to its own line
+                // instead of ellipsizing — no fixed margin to keep tight.
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 2,
+                  children: [
+                    CalmPill(
+                      label: isOver
+                          ? '-${formatCurrency(diff.abs())}'
+                          : formatCurrency(diff),
+                      color: isOver
+                          ? AppColors.bad(context)
+                          : AppColors.ok(context),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Spacer(),
-                Flexible(
-                  child: Text(
-                    l10n.expenseTrackerBudgetedLabel(formatCurrency(totalBudgeted)),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.ink50(context),
+                    Text(
+                      isOver
+                          ? l10n.expenseTrackerOver
+                          : l10n.expenseTrackerRemaining,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.ink70(context),
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
-                InfoIconButton(
-                  title: l10n.expenseTrackerScreenTitle,
-                  body: l10n.infoExpenseTrackerSummary,
+                // Row (not Wrap): InfoIconButton centres its icon with
+                // Center/Align, which shrink-wraps only under the
+                // *unbounded* main-axis constraint Flex gives non-flex
+                // children — under Wrap's bounded constraint it would
+                // instead expand to fill the whole run's width. Flexible
+                // still protects the label here since it never competes
+                // with group 1 for space (each group gets its own line from
+                // the outer Wrap when needed).
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.expenseTrackerBudgetedLabel(formatCurrency(totalBudgeted)),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.ink50(context),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.expenseTrackerScreenTitle,
+                      body: l10n.infoExpenseTrackerSummary,
+                    ),
+                  ],
                 ),
               ],
             ),
