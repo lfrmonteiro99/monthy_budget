@@ -849,10 +849,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       // "ALERTAS" card — over-budget categories
                       if (summaries.any((s) => s.isOver))
                         SliverPadding(
+                          key: const ValueKey('expense-tracker-alerts-card'),
                           padding:
                               const EdgeInsets.fromLTRB(20, 16, 20, 0),
                           sliver: SliverToBoxAdapter(
                             child: ExpenseAlertsCard(
+                            key: const ValueKey('alerts-card'),
                             summaries: summaries,
                             customCategories: widget.customCategories,
                             l10n: l10n,
@@ -863,10 +865,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       // "RECENTES" card — last 3 expenses quick-view
                       if (_expenses.isNotEmpty)
                         SliverPadding(
+                          key: const ValueKey('expense-tracker-recent-card'),
                           padding:
                               const EdgeInsets.fromLTRB(20, 16, 20, 0),
                           sliver: SliverToBoxAdapter(
                             child: ExpenseRecentCard(
+                            key: const ValueKey('recent-card'),
                             expenses: _expenses,
                             customCategories: widget.customCategories,
                             l10n: l10n,
@@ -877,6 +881,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
                       // "POR CATEGORIA" sticky section label
                       SliverPadding(
+                        key: const ValueKey('expense-tracker-category-label'),
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 6),
                         sliver: SliverToBoxAdapter(
                           child: Row(
@@ -895,10 +900,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       ),
                       SliverPadding(
+                        key: const ValueKey('expense-tracker-category-list'),
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                         sliver: SliverList.builder(
                           itemCount: summaries.length,
                           itemBuilder: (_, i) => CategorySection(
+                            key: ValueKey('category-${summaries[i].category}'),
                             summary: summaries[i],
                             expenses: _expenses
                                 .where(
