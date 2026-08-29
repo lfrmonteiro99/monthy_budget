@@ -961,15 +961,66 @@ extension _SettingsSections on _SettingsScreenState {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    // ── Monthly Budget ──
-                    _label(l10n.settingsMonthlyBudgetLabel),
+                    // ── Default Budget (template value; a current-month
+                    // override in _monthlyBudgetsDraft always takes
+                    // precedence — see the banner below) ──
+                    _label(l10n.expenseDefaultBudget),
                     const SizedBox(height: 8),
                     TextFormField(
+                      key: ValueKey('expense_amount_${expense.id}'),
                       initialValue: expense.amount > 0 ? expense.amount.toStringAsFixed(2) : '',
                       onChanged: (v) => _updateExpenseQuiet(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
                     ),
+                    // Monthly override info — placed immediately after the
+                    // field (not at the bottom of the card) so it's visible
+                    // without scrolling as soon as the category is expanded.
+                    if (_monthlyBudgetsDraft.containsKey(expense.category)) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(Icons.edit_calendar, size: 14, color: AppColors.ink50(context)),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              l10n.expenseOverrideActive(_currentMonthLabel(l10n),
+                                _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
+                              style: TextStyle(fontSize: 11, color: AppColors.ink(context)),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              // Read the live draft (not the `expense` closure,
+                              // which is stale mid-typing because the amount
+                              // field uses the quiet/no-rebuild update path).
+                              final current = _draft.expenses
+                                  .firstWhere((e) => e.id == expense.id, orElse: () => expense)
+                                  .amount;
+                              final fallback = _monthlyBudgetsDraft[expense.category] ?? expense.amount;
+                              _monthlyBudgetsDraft[expense.category] = current > 0 ? current : fallback;
+                            }),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              child: Text(
+                                l10n.expenseAdjustMonth(_currentMonthLabel(l10n)),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.ink(context),
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
+                            child: Icon(Icons.close, size: 14, color: AppColors.ink50(context)),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 8),
                     // Recurring payment toggle
                     _buildRecurringPaymentToggle(expense, l10n),
@@ -1042,27 +1093,6 @@ extension _SettingsSections on _SettingsScreenState {
                         ),
                       ],
                     ),
-                    // Monthly override info
-                    if (_monthlyBudgetsDraft.containsKey(expense.category)) ...[
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.edit_calendar, size: 14, color: AppColors.ink50(context)),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              l10n.expenseOverrideActive(_currentMonthLabel(l10n),
-                                _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
-                              style: TextStyle(fontSize: 11, color: AppColors.ink(context)),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
-                            child: Icon(Icons.close, size: 14, color: AppColors.ink50(context)),
-                          ),
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               );
