@@ -9,6 +9,22 @@ import 'package:monthly_management/widgets/expense/expense_recent_card.dart';
 import '../helpers/test_app.dart';
 import '../helpers/test_helpers.dart';
 
+// Re #1307 follow-up: the sliver Keys above make Flutter's OWN semantics
+// tree correct (verified — `tester.getSemantics(find.byType(ExpenseAlertsCard))`
+// already returns a fully-merged label starting with "Alerts\n...").  The
+// gate that blocked this PR twice was reproducing against the real browser's
+// accessibility DOM, not flutter_test's semantics tree, and there the
+// difference between ExpenseAlertsCard and ExpenseRecentCard is real: Alertas
+// has no interactive descendant, so Flutter's web renderer merges its whole
+// subtree into plain nested DOM text with no `aria-label` on the group
+// boundary, while Recentes (whose rows are wrapped in InkWell/onTap) gets an
+// explicit `aria-label` on its group boundary. Both are technically
+// ARIA-valid (accname falls back to subtree text), but relying on the
+// implicit fallback for a non-interactive group is exactly the fragile case
+// WAI-ARIA authoring practice warns against, and it is what the tester
+// tooling failed to discover this card by. Giving the container an EXPLICIT
+// label removes that reliance.
+
 // Reproduces the QA finding (#1307): in the CustomScrollView built by
 // ExpenseTrackerScreen, the conditional "Alertas" / "Recentes" / "Por
 // categoria" slivers carry no Key. When `monthlyBudgets` arrives later than
@@ -250,6 +266,73 @@ void main() {
         ),
         findsOneWidget,
       );
+    },
+  );
+
+  testWidgets(
+    'ExpenseAlertsCard exposes an explicit group label instead of relying on '
+    'merged children (#1307)',
+    (tester) async {
+      final settings = makeSettings(
+        expenses: [
+          makeExpense(id: 'exp_1', category: 'habitacao', amount: 500),
+        ],
+      );
+      final actual = makeActualExpense(
+        id: 'ae_1',
+        category: 'habitacao',
+        amount: 450,
+      );
+
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          ExpenseTrackerScreen(
+            settings: settings,
+            expenses: [actual],
+            householdId: 'house-1',
+            onAdd: (_) async {},
+            onUpdate: (_) async {},
+            onDelete: (_) async {},
+            onLoadMonth: (_) async => [actual],
+            monthlyBudgets: const {'habitacao': 400},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final alertsSemantics =
+          tester.getSemantics(find.byType(ExpenseAlertsCard));
+
+      // Before the fix this is the full merged blob ("Alerts\n1\nHousing\n
+      // Budget 400,00 € · Spent 450,00 €\n+50,00 €") because nothing in the
+      // subtree declares its own explicit label — the group's accessible
+      // name is whatever falls out of merging every descendant Text. After
+      // the fix the container declares its own short label directly, so it
+      // no longer starts with the eyebrow followed immediately by merged row
+      // detail.
+      expect(
+        alertsSemantics.label,
+        'Alerts, 1',
+        reason: 'ExpenseAlertsCard should expose an explicit, short group '
+            'label (eyebrow + count) instead of an implicitly-merged blob of '
+            'every row\'s text — the merged blob is what a real browser '
+            'renders as bare nested text with no aria-label on the group, '
+            'which is exactly the shape the QA tooling failed to discover.',
+      );
+
+      // Explicit label must not swallow the row into one opaque node: the
+      // category row itself should still be individually reachable, the way
+      // Recentes' individual transaction rows already are.
+      final rowFinder = find.descendant(
+        of: find.byType(ExpenseAlertsCard),
+        matching: find.text('Housing'),
+      );
+      expect(rowFinder, findsOneWidget);
+      final rowSemantics = tester.getSemantics(rowFinder);
+      expect(rowSemantics.label, contains('Housing'));
+
+      handle.dispose();
     },
   );
 }
