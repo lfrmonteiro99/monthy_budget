@@ -3427,6 +3427,10 @@ class SFr extends S {
       'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus — tapez simplement ce dont vous avez besoin.';
 
   @override
+  String get onbTourBackdropLabel =>
+      'Visite guidée. Touchez en dehors de la zone mise en évidence pour continuer, ou sur Passer pour terminer.';
+
+  @override
   String get taxDeductionTitle => 'Déductions Fiscales';
 
   @override
