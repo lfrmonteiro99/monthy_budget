@@ -88,6 +88,41 @@ void main() {
       );
     });
 
+    test(
+      'MonthlyBudgetService.saveMonth removes a category dropped from the '
+      'draft map (issue #1320: removing the override must delete the old '
+      'monthly_budgets row, not just skip re-saving it)',
+      () async {
+        final service = MonthlyBudgetService();
+        final before = await service.loadMonth(householdId, monthKey);
+        expect(
+          before.map((b) => b.category),
+          contains('alimentacao'),
+          reason: 'seed must contain the override this test removes',
+        );
+
+        // Mirrors what SettingsScreen sends after the user clicks the "X"
+        // next to the override and presses Guardar: the full replacement
+        // map for the month, with the cleared category simply absent.
+        final remaining = {
+          for (final b in before)
+            if (b.category != 'alimentacao') b.category: b.amount,
+        };
+
+        await service.saveMonth(householdId, monthKey, remaining);
+
+        final after = await service.loadMonth(householdId, monthKey);
+        expect(
+          after.map((b) => b.category),
+          isNot(contains('alimentacao')),
+          reason:
+              'the old override row must be deleted, not left behind as an '
+              'orphan that keeps overriding the base budget after reload',
+        );
+        expect(after, hasLength(9));
+      },
+    );
+
     test('SettingsService returns settings the tax simulator can use',
         () async {
       final settings = await SettingsService().load(householdId);

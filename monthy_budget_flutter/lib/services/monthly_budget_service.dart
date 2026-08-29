@@ -59,4 +59,51 @@ class MonthlyBudgetService {
       throw DataException('Failed to save monthly budgets', e, stack);
     }
   }
+
+  /// Replaces every override for [monthKey] with exactly [budgets]: categories
+  /// present get upserted, categories that existed before but are absent from
+  /// [budgets] get their old row deleted. [saveAll] alone cannot express this
+  /// — it is upsert-only, so a category the caller stopped sending (e.g. the
+  /// user removed the override in the UI) was silently left behind (#1320).
+  Future<void> saveMonth(
+    String householdId,
+    String monthKey,
+    Map<String, double> budgets,
+  ) async {
+    try {
+      final existing = await _resolvedRepository.loadMonth(
+        householdId,
+        monthKey,
+      );
+      final removedCategories = existing
+          .map((budget) => budget.category)
+          .where((category) => !budgets.containsKey(category));
+      for (final category in removedCategories) {
+        await _resolvedRepository.deleteMonth(householdId, monthKey, category);
+      }
+
+      final toSave = budgets.entries
+          .map(
+            (entry) => MonthlyBudget.create(
+              category: entry.key,
+              amount: entry.value,
+              monthKey: monthKey,
+            ),
+          )
+          .toList();
+      await _resolvedRepository.saveAll(toSave, householdId);
+    } catch (e, stack) {
+      LogService.error(
+        'Failed to save monthly budgets for $monthKey',
+        error: e,
+        stackTrace: stack,
+        category: 'service.monthly_budget',
+      );
+      throw DataException(
+        'Failed to save monthly budgets for $monthKey',
+        e,
+        stack,
+      );
+    }
+  }
 }

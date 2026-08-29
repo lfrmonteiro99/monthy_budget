@@ -111,6 +111,14 @@ class _MemBudgetRepo implements BudgetRepository {
     if (shouldThrow) throw StateError('saveAll failed');
     _items.addAll(budgets);
   }
+
+  @override
+  Future<void> deleteMonth(String hid, String monthKey, String category) async {
+    if (shouldThrow) throw StateError('deleteMonth failed');
+    _items.removeWhere(
+      (b) => b.monthKey == monthKey && b.category == category,
+    );
+  }
 }
 
 class _MemRecurringRepo implements RecurringExpenseRepository {

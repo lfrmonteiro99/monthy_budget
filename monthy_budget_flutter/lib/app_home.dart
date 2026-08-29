@@ -38,7 +38,6 @@ import 'services/meal_planner_service.dart';
 import 'services/actual_expense_service.dart';
 import 'services/monthly_budget_service.dart';
 import 'models/actual_expense.dart';
-import 'models/monthly_budget.dart';
 import 'widgets/add_expense_sheet.dart';
 import 'widgets/calm/calm.dart';
 import 'widgets/nav_bar_overlay_color.dart';
@@ -2094,16 +2093,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
           : l10n.subscriptionPro,
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
-        final budgets = budgetMap.entries
-            .map(
-              (e) => MonthlyBudget.create(
-                category: e.key,
-                amount: e.value,
-                monthKey: _currentMonthKey,
-              ),
-            )
-            .toList();
-        await _monthlyBudgetService.saveAll(budgets, widget.householdId);
+        await _monthlyBudgetService.saveMonth(
+          widget.householdId,
+          _currentMonthKey,
+          budgetMap,
+        );
         _loadMonthlyBudgets();
       },
       recurringExpenses: _recurringExpenses,
