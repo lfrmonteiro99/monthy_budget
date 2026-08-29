@@ -215,7 +215,7 @@ onde estão as fronteiras naturais."
 
 count_actionable() {
   local n=0 s
-  for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
+  for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_PREMERGE" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
     n=$(( n + $(issues_with "$s" | grep -c . || true) ))
   done
   echo "$n"
@@ -284,7 +284,7 @@ cleanup_stale() {
     # the bug that destroyed the critic's work: wiping the output of a live agent that
     # happens to run in another slot. So the curator is skipped whenever its own lock
     # is held.
-    local roles="implement review verify"
+    local roles="implement review verify premerge"
     if flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
       roles="curator $roles"
     fi
@@ -352,6 +352,7 @@ Devolvido a \`$L_READY\` para nova tentativa."
 run_curator()   { log "CURATOR -> #$1";     bash "$SCRIPT_DIR/curator.sh" "$1"   || log "curator falhou #$1"; }
 run_implement() { log "IMPLEMENTADOR -> #$1"; bash "$SCRIPT_DIR/implement.sh" "$1" || log "implement falhou #$1"; }
 run_verify()    { log "QA VERIFIER -> #$1"; bash "$SCRIPT_DIR/verify.sh" "$1"    || log "verify falhou #$1"; }
+run_premerge()  { log "GATE PRÉ-MERGE -> #$1"; bash "$SCRIPT_DIR/premerge.sh" "$1" || log "premerge falhou #$1"; }
 run_review()    { log "REVIEWER -> PR #$1"; bash "$SCRIPT_DIR/review.sh" "$1"    || log "review falhou PR #$1"; mark_reviewed "$1"; }
 
 run_critic() {
@@ -489,37 +490,18 @@ maybe_promote() {
   # The backlog threshold below is what stops that flooding the tracker: with a
   # deep queue of known-unfixed defects, a re-sweep mostly re-finds them, and
   # de-duplication throws the work away after the testers already spent the time.
-  # Reset the sweep record only if main ACTUALLY moved. Opening or updating a
-  # promotion PR changes nothing in production, and resetting on that would have the
-  # critic re-sweeping a main it has already covered, every cycle the PR sits waiting
-  # for CI.
-  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" >/dev/null 2>&1 || true
-  local main_after
-  main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
-  if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
-    # ...but ONLY when the queue was drained, i.e. this is a loop closing. A CADENCE
-    # promotion mid-drain also moves main, and resetting there is what stalled
-    # discovery all day.
-    #
-    # Measured over ~13 hours: 11 promotions moved main, coverage was reset 3 times,
-    # and the critic swept ONCE while being deferred 35 times on "backlog > 8". Every
-    # cadence promotion re-opened all nine dimensions, so the moment the queue fell to
-    # the threshold a full sweep would refill it — and the loop counter needs the queue
-    # at ZERO. Reset-on-any-move plus a backlog gate do not converge: they oscillate,
-    # and the goal of two completed loops becomes unreachable by construction.
-    #
-    # Tying the reset to a drained queue gives the rhythm the pipeline was designed
-    # for: sweep every dimension, drain what it found to zero, close the loop, ship
-    # the batch, then re-open discovery against the main that batch produced. New
-    # production code still gets re-tested — just once per loop instead of once per
-    # promotion.
-    if [ "$reason" = "backlog vazio" ]; then
-      rm -f "$COVERED_DIMS_FILE"
-      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta (loop fechado)"
-    else
-      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura mantida (promoção de cadência, fila ainda por drenar)"
-    fi
-  fi
+  # Coverage is NOT decided here any more.
+  #
+  # This compared main's sha before and after the call, which cannot work with
+  # auto-merge: the PR lands minutes later when CI goes green, long after this
+  # function returned, so the "after" sha is almost always the "before" sha. The
+  # empty-diff realign path exits earlier still. Net effect: the reset would never
+  # fire, and after a loop closed the critic would never re-examine the main that
+  # loop produced — the treadmill this was written to prevent.
+  #
+  # Same mistake as the realign bug fixed this morning: checking for an effect
+  # immediately after triggering something asynchronous. It belongs where the loop
+  # actually closes, which knows without asking anyone.
 }
 
 CRITIC_BG_PID=""
@@ -588,6 +570,7 @@ if [ -n "$TARGET_ISSUE" ]; then
   case "$STATE" in
     "$L_TRIAGE"|"$L_BLOCKED_SPEC") run_curator "$TARGET_ISSUE" ;;
     "$L_READY"|"$L_BLOCKED_IMPL")  run_implement "$TARGET_ISSUE" ;;
+    "$L_PREMERGE")                 run_premerge "$TARGET_ISSUE" ;;
     "$L_VERIFY")                   run_verify "$TARGET_ISSUE" ;;
     *) log "#$TARGET_ISSUE não está num estado accionável (${STATE:-sem estado})" ;;
   esac
@@ -690,21 +673,34 @@ while true; do
   fi
 
 
-  # Priority order matters. Reviewing first is what unblocks merges; verifying
-  # next is what closes issues. Only then do we start new work — otherwise the
+  # Priority order matters. Reviewing first is what unblocks merges; gating and
+  # merging next is what turns approved work into landed work; verifying after
+  # that is what closes issues. Only then do we start new work — otherwise the
   # backlog grows faster than it drains and nothing ever reaches qa:done.
 
   # 1. Review open PRs whose head has moved since the last review.
   PR=$(pick_pr)
   if [ -n "$PR" ]; then run_review "$PR"; DID=1; fi
 
-  # 2. Verify merged fixes on dev.
+  # 2. Gate approved PRs in the browser, then merge them.
+  #
+  # Ahead of verification on purpose. An issue here is holding an OPEN PR, and an
+  # open PR rots against `dev` — every fix that lands meanwhile is another chance
+  # for it to go DIRTY and need a conflict round trip. Landing it is what turns
+  # approved work into merged work; verification can wait one cycle, an ageing
+  # branch cannot.
+  if [ "$DID" = "0" ]; then
+    I=$(first_with "$L_PREMERGE")
+    if [ -n "$I" ]; then run_premerge "$I"; DID=1; fi
+  fi
+
+  # 3. Verify merged fixes on dev.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_VERIFY")
     if [ -n "$I" ]; then run_verify "$I"; DID=1; fi
   fi
 
-  # 3. Rework: code problems back to the implementer.
+  # 4. Rework: code problems back to the implementer.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_IMPL")
     if [ -n "$I" ]; then
@@ -716,7 +712,7 @@ while true; do
     fi
   fi
 
-  # 4. Rework: briefing problems back to the curator.
+  # 5. Rework: briefing problems back to the curator.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_SPEC")
     if [ -n "$I" ]; then
@@ -727,13 +723,13 @@ while true; do
     fi
   fi
 
-  # 5. Implement curated issues.
+  # 6. Implement curated issues.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_READY")
     if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
   fi
 
-  # 6. Backlog empty: that closes a loop. Run the critic to find the next batch.
+  # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
     # Trustworthy by construction: the cycle already aborted if the snapshot this
     # counts could not be read.
@@ -764,6 +760,13 @@ while true; do
       LOOPS=$((LOOPS + 1))
       echo "$LOOPS" > "$LOOP_STATE"
       log "backlog vazio — loop $LOOPS concluído"
+
+      # Reopen discovery HERE. The queue is drained, so everything found this loop is
+      # fixed and verified; the next sweep should examine the result. Doing it on the
+      # loop boundary rather than on an observed sha change removes the dependency on
+      # WHEN the promotion merges — which, with auto-merge, is never during this call.
+      rm -f "$COVERED_DIMS_FILE"
+      log "  cobertura reposta — o critic revarre o resultado deste loop"
 
       # Ship what QA verified. Without this the critic keeps re-testing a `main`
       # that never receives the fixes, and finds the same defects every loop.

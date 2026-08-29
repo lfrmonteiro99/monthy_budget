@@ -30,7 +30,17 @@ source "$SCRIPT_DIR/lib.sh"
 ROLE="run-agent"
 
 CLAUDE_MODEL="${CLAUDE_MODEL:-sonnet}"
-FALLBACK_MODEL="${FALLBACK_MODEL:-deepseek-v4-flash:cloud}"
+# The default is fast and cheap and CANNOT SEE. That is fine for the write-path roles,
+# which read code, and fatal for the testers, which read screenshots: this app paints
+# to canvas, so an image is the only evidence of what it looks like. A dimension
+# running on it dies with `API Error: 400 this model does not support image input` —
+# the tester was doing exactly what its prompt demands.
+#
+# Callers that need eyes set AGENT_FALLBACK_MODEL to a vision-capable cloud tag.
+# Verified answering through this same wrapper without pulling anything locally:
+# gemma4:31b-cloud, gemma4:cloud, qwen3.5:397b-cloud. Note the `-cloud` suffix — the
+# untagged name makes `ollama launch` try to download ~20GB onto a disk with 28 free.
+FALLBACK_MODEL="${AGENT_FALLBACK_MODEL:-${FALLBACK_MODEL:-deepseek-v4-flash:cloud}}"
 AGENT_SLOT="${AGENT_SLOT:-main}"
 
 [ -f "$PROMPT_FILE" ] || { echo "ERRO: prompt não existe: $PROMPT_FILE" >&2; exit 1; }
@@ -183,7 +193,23 @@ run_harness() {
   # already deleted, so it cannot even be found to be killed. Measured: a `timeout`
   # and a `claude` process still pinning /tmp/monthy-budget-agent.main.lock long
   # after their parent was gone.
-  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 9>&- &
+  # `< /dev/null` CLOSES STDIN, and its absence cost most of a day.
+  #
+  # `ollama launch claude` waits on stdin before doing anything. With stdin inherited
+  # from the orchestrator — a descriptor that never delivers and never closes — it sat
+  # there, printed "Execution error", and hung until the timeout reaped it. Seven
+  # critic dimensions burned 1800s each that way: about two hours of wall clock for
+  # zero verdicts, with logs that look exactly like a sweep that found nothing.
+  #
+  # The wrapper says so itself, in a warning that came AFTER the error text: "no stdin
+  # data received in 3s ... redirect stdin explicitly: < /dev/null". I never saw it,
+  # because every bisection I ran piped the output through `head -c 40`. I truncated
+  # the evidence to fit the screen and then spent two hours investigating what was
+  # left — ruling out prompt size, encoding, multi-line, flags and concurrency, all
+  # measured carefully, all against a source I had blinded myself.
+  #
+  # With stdin closed the same command fails in two seconds with a real message.
+  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" < /dev/null > >(tee "$out_file") 2>&1 9>&- &
   local pid=$!
   echo "$pid" > "$PGID_FILE"
 
@@ -324,6 +350,17 @@ if [ -z "$USED" ]; then
       --allowedTools "$ALLOWED_TOOLS" \
       --strict-mcp-config --mcp-config '{"mcpServers":{}}'
   RC=$?
+fi
+
+# The fallback has quotas too, and when both engines are dry the sweep should WAIT,
+# not spin. Observed: with Claude cooling and Ollama returning "you have reached your
+# session usage limit", the layout dimension relaunched every nine minutes, failing in
+# 180s each time. It burned no quota — it fails before doing work — but it hammers the
+# very API that is rate-limiting us, which is a good way to stay rate-limited.
+if printf '%s' "$AGENT_OUTPUT" | grep -qiE 'session usage limit|temporarily limiting requests|rate limit'; then
+  FB_COOLDOWN="$STATE_DIR/ollama-usage-cooldown"
+  echo $(( $(date +%s) + ${OLLAMA_COOLDOWN_MIN:-30} * 60 )) > "$FB_COOLDOWN" 2>/dev/null || true
+  echo "[run-agent] fallback sem quota — em cooldown ${OLLAMA_COOLDOWN_MIN:-30}min" >&2
 fi
 
 echo "[run-agent] fim: motor=$USED rc=$RC" >&2
