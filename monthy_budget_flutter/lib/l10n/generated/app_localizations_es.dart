@@ -308,7 +308,7 @@ class SEs extends S {
 
   @override
   String monthReviewExpensesExceeded(String amount) {
-    return 'Los gastos reales superaron lo planificado en $amountââ€šÂ¬ — Â¿ajustar valores en configuración?';
+    return 'Los gastos reales superaron lo planificado en $amountââ€šÂ¬ — ¿ajustar valores en configuración?';
   }
 
   @override
@@ -567,7 +567,7 @@ class SEs extends S {
 
   @override
   String get coachClearContent =>
-      'Â¿Estás seguro de que quieres eliminar todos los análisis guardados?';
+      '¿Estás seguro de que quieres eliminar todos los análisis guardados?';
 
   @override
   String get coachDeleteLabel => 'Eliminar análisis';
@@ -876,7 +876,7 @@ class SEs extends S {
   String get shoppingEstimatedTotal => 'Total estimado';
 
   @override
-  String get shoppingHowMuchSpent => 'Â¿CUÁNTO GASTÉ EN TOTAL? (opcional)';
+  String get shoppingHowMuchSpent => '¿CUÁNTO GASTÉ EN TOTAL? (opcional)';
 
   @override
   String get shoppingConfirm => 'Confirmar';
@@ -1004,7 +1004,7 @@ class SEs extends S {
 
   @override
   String get authRegistrationSuccess =>
-      'Â¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.';
+      '¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.';
 
   @override
   String get authErrorNetwork =>
@@ -1269,7 +1269,7 @@ class SEs extends S {
   String get mealGenerating => 'Generando...';
 
   @override
-  String get mealRegenerateTitle => 'Â¿Regenerar plan?';
+  String get mealRegenerateTitle => '¿Regenerar plan?';
 
   @override
   String get mealRegenerateContent => 'El plan actual será sustituido.';
@@ -1372,7 +1372,7 @@ class SEs extends S {
 
   @override
   String get wizardMealsQuestion =>
-      'Â¿Qué comidas quieres incluir en el plan diario?';
+      '¿Qué comidas quieres incluir en el plan diario?';
 
   @override
   String wizardBudgetWeight(String weight) {
@@ -1381,7 +1381,7 @@ class SEs extends S {
 
   @override
   String get wizardObjectiveQuestion =>
-      'Â¿Cuál es el objetivo principal de tu plan alimentario?';
+      '¿Cuál es el objetivo principal de tu plan alimentario?';
 
   @override
   String wizardSelected(String label) {
@@ -1594,7 +1594,7 @@ class SEs extends S {
   String get settingsCopyCode => 'Copiar';
 
   @override
-  String get settingsCodeCopied => 'Â¡Código copiado!';
+  String get settingsCodeCopied => '¡Código copiado!';
 
   @override
   String get settingsAdminOnly =>
@@ -1614,7 +1614,7 @@ class SEs extends S {
 
   @override
   String get settingsLogoutConfirmContent =>
-      'Â¿Estás seguro de que quieres cerrar sesión?';
+      '¿Estás seguro de que quieres cerrar sesión?';
 
   @override
   String get settingsLogoutConfirmButton => 'Cerrar sesión';
@@ -2243,7 +2243,7 @@ class SEs extends S {
   String get setupWizardContinue => 'Continuar';
 
   @override
-  String get setupWizardCountryTitle => 'Â¿Dónde vives?';
+  String get setupWizardCountryTitle => '¿Dónde vives?';
 
   @override
   String get setupWizardCountrySubtitle =>
@@ -2291,7 +2291,7 @@ class SEs extends S {
   String get setupWizardTitulares => 'Titulares fiscales';
 
   @override
-  String get setupWizardSalaryTitle => 'Â¿Cuál es tu salario?';
+  String get setupWizardSalaryTitle => '¿Cuál es tu salario?';
 
   @override
   String get setupWizardSalarySubtitle =>
@@ -2349,7 +2349,7 @@ class SEs extends S {
   String get setupWizardFinish => 'Finalizar';
 
   @override
-  String get setupWizardCompleteTitle => 'Â¡Todo listo!';
+  String get setupWizardCompleteTitle => '¡Todo listo!';
 
   @override
   String get setupWizardCompleteReassurance =>
@@ -2413,7 +2413,7 @@ class SEs extends S {
   }
 
   @override
-  String get expenseTrackerDeleteConfirm => 'Â¿Eliminar este gasto?';
+  String get expenseTrackerDeleteConfirm => '¿Eliminar este gasto?';
 
   @override
   String get expenseTrackerEmpty =>
@@ -2554,8 +2554,7 @@ class SEs extends S {
       'Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.';
 
   @override
-  String get recurringExpenseDeleteConfirm =>
-      'Â¿Eliminar este pago recurrente?';
+  String get recurringExpenseDeleteConfirm => '¿Eliminar este pago recurrente?';
 
   @override
   String get recurringExpenseAutoCreated => 'Creado automáticamente';
@@ -2816,14 +2815,14 @@ class SEs extends S {
   }
 
   @override
-  String get savingsGoalCompleted => 'Â¡Objetivo alcanzado!';
+  String get savingsGoalCompleted => '¡Objetivo alcanzado!';
 
   @override
   String get savingsGoalEmpty =>
       'Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.';
 
   @override
-  String get savingsGoalDeleteConfirm => 'Â¿Eliminar este objetivo?';
+  String get savingsGoalDeleteConfirm => '¿Eliminar este objetivo?';
 
   @override
   String get savingsGoalContribute => 'Contribuir';
@@ -2845,7 +2844,7 @@ class SEs extends S {
 
   @override
   String savingsGoalSurplusSuggestion(String amount) {
-    return 'Tuviste $amount de excedente el mes pasado — Â¿quieres asignar a un objetivo?';
+    return 'Tuviste $amount de excedente el mes pasado — ¿quieres asignar a un objetivo?';
   }
 
   @override
@@ -3046,7 +3045,7 @@ class SEs extends S {
   String get notificationCustomSaved => 'Recordatorio guardado';
 
   @override
-  String get notificationCustomDeleteConfirm => 'Â¿Eliminar este recordatorio?';
+  String get notificationCustomDeleteConfirm => '¿Eliminar este recordatorio?';
 
   @override
   String get notificationEmpty => 'Sin recordatorios personalizados.';
@@ -3683,11 +3682,11 @@ class SEs extends S {
 
   @override
   String subscriptionTrialEndingSoon(int count) {
-    return 'Â¡$count días restantes en tu prueba!';
+    return '¡$count días restantes en tu prueba!';
   }
 
   @override
-  String get subscriptionTrialLastDay => 'Â¡Último día de tu prueba gratuita!';
+  String get subscriptionTrialLastDay => '¡Último día de tu prueba gratuita!';
 
   @override
   String get subscriptionUpgradeNow => 'Actualizar Ahora';
@@ -4044,7 +4043,7 @@ class SEs extends S {
   String get helperWizardTelecom => 'Internet, teléfono y TV mensuales';
 
   @override
-  String get savingsGoalHowItWorksTitle => 'Â¿Cómo funciona?';
+  String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
 
   @override
   String get savingsGoalHowItWorksStep1 =>
@@ -5021,11 +5020,11 @@ class SEs extends S {
 
   @override
   String trialDaysLeftInTrial(int count) {
-    return 'Â¡$count días restantes en tu prueba!';
+    return '¡$count días restantes en tu prueba!';
   }
 
   @override
-  String get trialLastDay => 'Â¡Último día de tu prueba gratuita!';
+  String get trialLastDay => '¡Último día de tu prueba gratuita!';
 
   @override
   String get trialSeePlans => 'Ver Planes';
@@ -5039,16 +5038,16 @@ class SEs extends S {
 
   @override
   String trialSubtitleMidFeature(String name) {
-    return 'Â¿Ya probaste el $name? Â¡Aprovecha al máximo tu prueba!';
+    return '¿Ya probaste el $name? ¡Aprovecha al máximo tu prueba!';
   }
 
   @override
   String get trialSubtitleMidProgress =>
-      'Â¡Estás haciendo un gran progreso! Sigue explorando funciones premium.';
+      '¡Estás haciendo un gran progreso! Sigue explorando funciones premium.';
 
   @override
   String get trialSubtitleEarly =>
-      'Tienes acceso completo a todas las funciones premium. Â¡Explora todo!';
+      'Tienes acceso completo a todas las funciones premium. ¡Explora todo!';
 
   @override
   String trialFeaturesExplored(int explored, int total) {
@@ -5097,7 +5096,7 @@ class SEs extends S {
 
   @override
   String get receiptScanPrompt =>
-      'Â¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.';
+      '¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.';
 
   @override
   String get receiptMerchantUnknown => 'Tienda desconocida';
@@ -5225,13 +5224,13 @@ class SEs extends S {
   String get paywallContinueFree => 'Continuar gratis';
 
   @override
-  String get paywallUpgradedPro => 'Actualizado a Pro — Â¡gracias!';
+  String get paywallUpgradedPro => 'Actualizado a Pro — ¡gracias!';
 
   @override
   String get paywallNoRestore => 'No se encontraron compras anteriores';
 
   @override
-  String get paywallRestoredPro => 'Â¡Suscripción Pro restaurada!';
+  String get paywallRestoredPro => '¡Suscripción Pro restaurada!';
 
   @override
   String get subscriptionPro => 'Pro';
@@ -5336,7 +5335,7 @@ class SEs extends S {
   String get coachContinueEco => 'Continuar con Eco';
 
   @override
-  String get coachAchieved => 'Â¡Lo logré!';
+  String get coachAchieved => '¡Lo logré!';
 
   @override
   String get coachNotYet => 'Aún no';
@@ -5440,7 +5439,7 @@ class SEs extends S {
   String get customCategoryDelete => 'Eliminar Categoría';
 
   @override
-  String get customCategoryDeleteConfirm => 'Â¿Eliminar esta categoría?';
+  String get customCategoryDeleteConfirm => '¿Eliminar esta categoría?';
 
   @override
   String get customCategoryName => 'Nombre de categoría';
@@ -5517,7 +5516,7 @@ class SEs extends S {
       'Te recuerda registrar los gastos del día';
 
   @override
-  String get notifDailyExpenseTitle => 'Â¡No olvides tus gastos!';
+  String get notifDailyExpenseTitle => '¡No olvides tus gastos!';
 
   @override
   String get notifDailyExpenseBody =>
@@ -5618,7 +5617,7 @@ class SEs extends S {
 
   @override
   String get dashboardCoachGoodSavings =>
-      'Â¡Excelente! Estás ahorrando más del 20%. Â¡Sigue así!';
+      '¡Excelente! Estás ahorrando más del 20%. ¡Sigue así!';
 
   @override
   String get dashboardCoachGeneral =>

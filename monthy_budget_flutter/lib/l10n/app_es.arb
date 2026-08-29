@@ -131,7 +131,7 @@
             }
         }
     },
-    "monthReviewExpensesExceeded": "Los gastos reales superaron lo planificado en {amount}ââ€šÂ¬ — Â¿ajustar valores en configuración?",
+    "monthReviewExpensesExceeded": "Los gastos reales superaron lo planificado en {amount}ââ€šÂ¬ — ¿ajustar valores en configuración?",
     "@monthReviewExpensesExceeded": {
         "placeholders": {
             "amount": {
@@ -301,7 +301,7 @@
     "coachHistory": "HISTORIAL",
     "coachClearAll": "Limpiar todo",
     "coachClearTitle": "Limpiar historial",
-    "coachClearContent": "Â¿Estás seguro de que quieres eliminar todos los análisis guardados?",
+    "coachClearContent": "¿Estás seguro de que quieres eliminar todos los análisis guardados?",
     "coachDeleteLabel": "Eliminar análisis",
     "coachDeleteTooltip": "Eliminar",
     "coachEmptyTitle": "Tu coach financiero",
@@ -465,7 +465,7 @@
     "shoppingClear": "Limpiar",
     "shoppingFinalize": "Finalizar Compra",
     "shoppingEstimatedTotal": "Total estimado",
-    "shoppingHowMuchSpent": "Â¿CUÁNTO GASTÉ EN TOTAL? (opcional)",
+    "shoppingHowMuchSpent": "¿CUÁNTO GASTÉ EN TOTAL? (opcional)",
     "shoppingConfirm": "Confirmar",
     "shoppingHistoryTooltip": "Historial de compras",
     "shoppingHistoryTitle": "Historial de Compras",
@@ -562,7 +562,7 @@
     "authRegisterButton": "Registrarse",
     "authSwitchToRegister": "Crear cuenta nueva",
     "authSwitchToLogin": "Ya tengo cuenta",
-    "authRegistrationSuccess": "Â¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.",
+    "authRegistrationSuccess": "¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.",
     "authErrorNetwork": "No se pudo conectar al servidor. Comprueba tu conexión a internet e inténtalo de nuevo.",
     "authErrorInvalidCredentials": "Email o contraseña incorrectos. Inténtalo de nuevo.",
     "authErrorEmailNotConfirmed": "Verifica tu email antes de iniciar sesión.",
@@ -708,7 +708,7 @@
     "mealPeopleLabel": "Personas en el hogar",
     "mealGeneratePlan": "Generar Plan Mensual",
     "mealGenerating": "Generando...",
-    "mealRegenerateTitle": "Â¿Regenerar plan?",
+    "mealRegenerateTitle": "¿Regenerar plan?",
     "mealRegenerateContent": "El plan actual será sustituido.",
     "mealRegenerate": "Regenerar",
     "mealWeekLabel": "Semana {n}",
@@ -780,7 +780,7 @@
     "wizardStepRestrictions": "Restricciones",
     "wizardStepKitchen": "Cocina",
     "wizardStepStrategy": "Estrategia",
-    "wizardMealsQuestion": "Â¿Qué comidas quieres incluir en el plan diario?",
+    "wizardMealsQuestion": "¿Qué comidas quieres incluir en el plan diario?",
     "wizardBudgetWeight": "{weight} del presupuesto",
     "@wizardBudgetWeight": {
         "placeholders": {
@@ -789,7 +789,7 @@
             }
         }
     },
-    "wizardObjectiveQuestion": "Â¿Cuál es el objetivo principal de tu plan alimentario?",
+    "wizardObjectiveQuestion": "¿Cuál es el objetivo principal de tu plan alimentario?",
     "wizardSelected": "{label}, seleccionado",
     "@wizardSelected": {
         "placeholders": {
@@ -887,13 +887,13 @@
     "settingsApiKey": "API Key OpenAI",
     "settingsInviteCode": "Código de invitación",
     "settingsCopyCode": "Copiar",
-    "settingsCodeCopied": "Â¡Código copiado!",
+    "settingsCodeCopied": "¡Código copiado!",
     "settingsAdminOnly": "Solo el administrador puede editar la configuración.",
     "settingsShowSummaryCards": "Mostrar tarjetas resumen",
     "settingsEnabledCharts": "Gráficos activos",
     "settingsLogout": "Cerrar sesión",
     "settingsLogoutConfirmTitle": "Cerrar sesión",
-    "settingsLogoutConfirmContent": "Â¿Estás seguro de que quieres cerrar sesión?",
+    "settingsLogoutConfirmContent": "¿Estás seguro de que quieres cerrar sesión?",
     "settingsLogoutConfirmButton": "Cerrar sesión",
     "settingsSalariesSection": "Ingresos",
     "settingsExpensesMonthly": "Presupuesto y Pagos Recurrentes",
@@ -1207,7 +1207,7 @@
         }
     },
     "setupWizardContinue": "Continuar",
-    "setupWizardCountryTitle": "Â¿Dónde vives?",
+    "setupWizardCountryTitle": "¿Dónde vives?",
     "setupWizardCountrySubtitle": "Esto define el sistema fiscal, la moneda y los valores por defecto.",
     "setupWizardLanguage": "Idioma",
     "setupWizardLangSystem": "Predeterminado del sistema",
@@ -1222,7 +1222,7 @@
     "setupWizardMarried": "Casado/a",
     "setupWizardDependents": "Dependientes",
     "setupWizardTitulares": "Titulares fiscales",
-    "setupWizardSalaryTitle": "Â¿Cuál es tu salario?",
+    "setupWizardSalaryTitle": "¿Cuál es tu salario?",
     "setupWizardSalarySubtitle": "Introduce el importe bruto mensual. Calculamos el neto automáticamente.",
     "setupWizardSalaryGross": "Salario bruto mensual",
     "setupWizardNetEstimate": "Neto estimado: {amount}",
@@ -1265,7 +1265,7 @@
         }
     },
     "setupWizardFinish": "Finalizar",
-    "setupWizardCompleteTitle": "Â¡Todo listo!",
+    "setupWizardCompleteTitle": "¡Todo listo!",
     "setupWizardCompleteReassurance": "Tu presupuesto está configurado. Puedes ajustarlo todo en ajustes en cualquier momento.",
     "setupWizardGoToDashboard": "Ver mi presupuesto",
     "setupWizardConfigureSalaryHint": "Configura tu salario en ajustes para ver el cálculo completo.",
@@ -1292,7 +1292,7 @@
             }
         }
     },
-    "expenseTrackerDeleteConfirm": "Â¿Eliminar este gasto?",
+    "expenseTrackerDeleteConfirm": "¿Eliminar este gasto?",
     "expenseTrackerEmpty": "Sin gastos este mes.\nToca + para añadir el primero.",
     "expenseTrackerMovementEyebrow": "Actividad",
     "expenseTrackerExpensesTitle": "Gastos",
@@ -1336,7 +1336,7 @@
     "recurringExpenseActive": "Activo",
     "recurringExpenseInactive": "Inactivo",
     "recurringExpenseEmpty": "Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.",
-    "recurringExpenseDeleteConfirm": "Â¿Eliminar este pago recurrente?",
+    "recurringExpenseDeleteConfirm": "¿Eliminar este pago recurrente?",
     "recurringExpenseAutoCreated": "Creado automáticamente",
     "recurringExpenseManage": "Gestionar pagos recurrentes",
     "recurringExpenseMarkRecurring": "Marcar como pago recurrente",
@@ -1490,16 +1490,16 @@
             }
         }
     },
-    "savingsGoalCompleted": "Â¡Objetivo alcanzado!",
+    "savingsGoalCompleted": "¡Objetivo alcanzado!",
     "savingsGoalEmpty": "Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.",
-    "savingsGoalDeleteConfirm": "Â¿Eliminar este objetivo?",
+    "savingsGoalDeleteConfirm": "¿Eliminar este objetivo?",
     "savingsGoalContribute": "Contribuir",
     "savingsGoalContributionAmount": "Importe de contribución",
     "savingsGoalContributionNote": "Nota (opcional)",
     "savingsGoalContributionDate": "Fecha",
     "savingsGoalContributionHistory": "Historial de Contribuciones",
     "savingsGoalSeeAll": "Ver todos",
-    "savingsGoalSurplusSuggestion": "Tuviste {amount} de excedente el mes pasado — Â¿quieres asignar a un objetivo?",
+    "savingsGoalSurplusSuggestion": "Tuviste {amount} de excedente el mes pasado — ¿quieres asignar a un objetivo?",
     "@savingsGoalSurplusSuggestion": {
         "placeholders": {
             "amount": {
@@ -1610,7 +1610,7 @@
     "notificationCustomRepeatMonthly": "Mensual",
     "notificationCustomRepeatNone": "No repetir",
     "notificationCustomSaved": "Recordatorio guardado",
-    "notificationCustomDeleteConfirm": "Â¿Eliminar este recordatorio?",
+    "notificationCustomDeleteConfirm": "¿Eliminar este recordatorio?",
     "notificationEmpty": "Sin recordatorios personalizados.",
     "notificationBillTitle": "Pago pendiente: {name}",
     "@notificationBillTitle": {
@@ -1941,7 +1941,7 @@
         }
     },
     "subscriptionTrialBannerTitle": "Prueba Premium Activa",
-    "subscriptionTrialEndingSoon": "Â¡{count} días restantes en tu prueba!",
+    "subscriptionTrialEndingSoon": "¡{count} días restantes en tu prueba!",
     "@subscriptionTrialEndingSoon": {
         "placeholders": {
             "count": {
@@ -1949,7 +1949,7 @@
             }
         }
     },
-    "subscriptionTrialLastDay": "Â¡Último día de tu prueba gratuita!",
+    "subscriptionTrialLastDay": "¡Último día de tu prueba gratuita!",
     "subscriptionUpgradeNow": "Actualizar Ahora",
     "subscriptionKeepData": "Mantener Tus Datos",
     "subscriptionCancelAnytime": "Cancela en cualquier momento",
@@ -2092,7 +2092,7 @@
     "helperWizardTransport": "Costes mensuales de transporte (combustible, transporte público, etc.)",
     "helperWizardUtilities": "Electricidad, agua y gas mensuales",
     "helperWizardTelecom": "Internet, teléfono y TV mensuales",
-    "savingsGoalHowItWorksTitle": "Â¿Cómo funciona?",
+    "savingsGoalHowItWorksTitle": "¿Cómo funciona?",
     "@savingsGoalHowItWorksTitle": {
         "description": "How it works section title"
     },
@@ -2643,24 +2643,24 @@
 
     "trialPremiumActive": "Prueba Premium Activa",
     "trialHalfway": "Tu prueba está a mitad de camino",
-    "trialDaysLeftInTrial": "Â¡{count} días restantes en tu prueba!",
+    "trialDaysLeftInTrial": "¡{count} días restantes en tu prueba!",
     "@trialDaysLeftInTrial": {
         "placeholders": {
             "count": { "type": "int" }
         }
     },
-    "trialLastDay": "Â¡Último día de tu prueba gratuita!",
+    "trialLastDay": "¡Último día de tu prueba gratuita!",
     "trialSeePlans": "Ver Planes",
     "trialUpgradeNow": "Mejorar Ahora \u2014 Conserva Tus Datos",
     "trialSubtitleUrgent": "Tu acceso premium termina pronto. Mejora para conservar el Coach IA, Planificador de Comidas y todos tus datos.",
-    "trialSubtitleMidFeature": "Â¿Ya probaste el {name}? Â¡Aprovecha al máximo tu prueba!",
+    "trialSubtitleMidFeature": "¿Ya probaste el {name}? ¡Aprovecha al máximo tu prueba!",
     "@trialSubtitleMidFeature": {
         "placeholders": {
             "name": { "type": "String" }
         }
     },
-    "trialSubtitleMidProgress": "Â¡Estás haciendo un gran progreso! Sigue explorando funciones premium.",
-    "trialSubtitleEarly": "Tienes acceso completo a todas las funciones premium. Â¡Explora todo!",
+    "trialSubtitleMidProgress": "¡Estás haciendo un gran progreso! Sigue explorando funciones premium.",
+    "trialSubtitleEarly": "Tienes acceso completo a todas las funciones premium. ¡Explora todo!",
     "trialFeaturesExplored": "{explored}/{total} funciones exploradas",
     "@trialFeaturesExplored": {
         "placeholders": {
@@ -2695,7 +2695,7 @@
         }
     },
     "receiptScanFailed": "No se pudo leer el recibo",
-    "receiptScanPrompt": "Â¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.",
+    "receiptScanPrompt": "¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.",
     "receiptMerchantUnknown": "Tienda desconocida",
     "receiptMerchantNamePrompt": "Ingrese el nombre de la tienda para NIF {nif}",
     "@receiptMerchantNamePrompt": {
@@ -2781,9 +2781,9 @@
     "navMoreTip": "Ajustes y análisis",
 
     "paywallContinueFree": "Continuando con el plan gratuito",
-    "paywallUpgradedPro": "Actualizado a Pro — Â¡gracias!",
+    "paywallUpgradedPro": "Actualizado a Pro — ¡gracias!",
     "paywallNoRestore": "No se encontraron compras anteriores",
-    "paywallRestoredPro": "Â¡Suscripción Pro restaurada!",
+    "paywallRestoredPro": "¡Suscripción Pro restaurada!",
     "subscriptionPro": "Pro",
     "subscriptionTrialLabel": "Prueba ({count} días restantes)",
     "@subscriptionTrialLabel": {
@@ -2824,7 +2824,7 @@
 
     "coachBuyCredits": "Comprar créditos",
     "coachContinueEco": "Continuar con Eco",
-    "coachAchieved": "Â¡Lo logré!",
+    "coachAchieved": "¡Lo logré!",
     "coachNotYet": "Aún no",
     "coachCreditsAdded": "+{count} créditos añadidos",
     "@coachCreditsAdded": {
@@ -2906,7 +2906,7 @@
     "customCategoryAdd": "Añadir Categoría",
     "customCategoryEdit": "Editar Categoría",
     "customCategoryDelete": "Eliminar Categoría",
-    "customCategoryDeleteConfirm": "Â¿Eliminar esta categoría?",
+    "customCategoryDeleteConfirm": "¿Eliminar esta categoría?",
     "customCategoryName": "Nombre de categoría",
     "customCategoryIcon": "Icono",
     "customCategoryColor": "Color",
@@ -2930,7 +2930,7 @@
     "biometricRetry": "Intentar de Nuevo",
     "notifDailyExpenseReminder": "Recordatorio diario de gastos",
     "notifDailyExpenseReminderDesc": "Te recuerda registrar los gastos del día",
-    "notifDailyExpenseTitle": "Â¡No olvides tus gastos!",
+    "notifDailyExpenseTitle": "¡No olvides tus gastos!",
     "notifDailyExpenseBody": "Tómate un momento para registrar los gastos de hoy",
     "settingsSalaryLabelHint": "ej: Empleo principal, Freelance",
     "settingsExpenseNameLabel": "NOMBRE DEL GASTO",
@@ -2960,7 +2960,7 @@
     "dashboardCoachInsightSubtitle": "Sugerencia personalizada del asistente financiero",
     "dashboardCoachLowSavings": "Tu tasa de ahorro está por debajo del 10%. Identifica un gasto que puedas reducir este mes.",
     "dashboardCoachHighSpending": "Los gastos se acercan a tus ingresos. Revisa los gastos no esenciales.",
-    "dashboardCoachGoodSavings": "Â¡Excelente! Estás ahorrando más del 20%. Â¡Sigue así!",
+    "dashboardCoachGoodSavings": "¡Excelente! Estás ahorrando más del 20%. ¡Sigue así!",
     "dashboardCoachGeneral": "Toca para obtener análisis personalizados de tu presupuesto.",
     "dashGroupInsights": "Análisis",
     "dashReorderHint": "Arrastra para reordenar las tarjetas",
