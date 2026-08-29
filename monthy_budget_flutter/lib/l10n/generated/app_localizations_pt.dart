@@ -580,16 +580,16 @@ class SPt extends S {
 
   @override
   String get coachEmptyBody =>
-      'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
+      'Pergunta o que quiseres sobre o teu orçamento, despesas ou poupanças. Vou usar os teus dados reais para dar conselhos personalizados.';
 
   @override
   String get coachSuggestionsEyebrow => 'Sugestões';
 
   @override
-  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
+  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mês?';
 
   @override
-  String get coachQuickPrompt2 => 'Como melhoro a minha poupanca?';
+  String get coachQuickPrompt2 => 'Como melhoro a minha poupança?';
 
   @override
   String get coachQuickPrompt3 => 'Ajuda-me a definir um plano para 30 dias.';
@@ -605,22 +605,22 @@ class SPt extends S {
 
   @override
   String coachCreditsCount(int count) {
-    return '$count creditos';
+    return '$count créditos';
   }
 
   @override
-  String get coachMemory => 'Memoria';
+  String get coachMemory => 'Memória';
 
   @override
-  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
+  String get coachCostFree => 'Modo Eco — sem custos de créditos.';
 
   @override
   String coachCostCredits(int cost) {
-    return 'Esta mensagem custa $cost creditos.';
+    return 'Esta mensagem custa $cost créditos.';
   }
 
   @override
-  String get coachFree => 'Gratis';
+  String get coachFree => 'Grátis';
 
   @override
   String coachPerMsg(int cost) {
@@ -628,14 +628,14 @@ class SPt extends S {
   }
 
   @override
-  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem creditos)';
+  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem créditos)';
 
   @override
   String get coachEcoFallbackBody =>
-      'Podes continuar a conversar, mas com memoria reduzida.';
+      'Podes continuar a conversar, mas com memória reduzida.';
 
   @override
-  String get coachRestoreMemory => 'Restaurar memoria';
+  String get coachRestoreMemory => 'Restaurar memória';
 
   @override
   String get cmdAssistantTitle => 'Assistente';
@@ -656,7 +656,7 @@ class SPt extends S {
   String get cmdSuggestionChangeTheme => 'Mudar tema';
 
   @override
-  String get cmdSuggestionOpenSettings => 'Ir para definicoes';
+  String get cmdSuggestionOpenSettings => 'Ir para definições';
 
   @override
   String get cmdTemplateAddExpense => 'Adiciona [valor] euros em [categoria]';
@@ -665,17 +665,17 @@ class SPt extends S {
   String get cmdTemplateOpenList => 'Abre a lista de compras';
 
   @override
-  String get cmdTemplateOpenSettings => 'Abre as definicoes';
+  String get cmdTemplateOpenSettings => 'Abre as definições';
 
   @override
   String get cmdTemplateChangeTheme => 'Muda o tema para [claro/escuro]';
 
   @override
   String get cmdExecutionFailed =>
-      'Percebi o pedido, mas nao consegui executar. Tenta novamente.';
+      'Percebi o pedido, mas não consegui executar. Tenta novamente.';
 
   @override
-  String get cmdNotUnderstood => 'Nao percebi. Podes reformular?';
+  String get cmdNotUnderstood => 'Não percebi. Podes reformular?';
 
   @override
   String get cmdUndo => 'Desfazer';
@@ -687,15 +687,15 @@ class SPt extends S {
   String get cmdCapabilitiesCta => 'O que posso fazer?';
 
   @override
-  String get cmdCapabilitiesTitle => 'Acoes disponiveis';
+  String get cmdCapabilitiesTitle => 'Ações disponíveis';
 
   @override
   String get cmdCapabilitiesSubtitle =>
-      'Estas sao as acoes que o assistente suporta neste momento.';
+      'Estas são as ações que o assistente suporta neste momento.';
 
   @override
   String get cmdCapabilitiesFooter =>
-      'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.';
+      'Estamos a adicionar mais. Se ainda não estiver aqui, pode não funcionar.';
 
   @override
   String get cmdCapabilityAddExpense => 'Adicionar uma despesa';
@@ -727,15 +727,15 @@ class SPt extends S {
       'Marca [item] na lista de compras';
 
   @override
-  String get cmdCapabilityAddSavingsGoal => 'Criar objetivo de poupanca';
+  String get cmdCapabilityAddSavingsGoal => 'Criar objetivo de poupança';
 
   @override
   String get cmdCapabilityAddSavingsGoalExample =>
-      'Cria objetivo de poupanca [nome] de [valor]';
+      'Cria objetivo de poupança [nome] de [valor]';
 
   @override
   String get cmdCapabilityAddSavingsContribution =>
-      'Adicionar ao objetivo de poupanca';
+      'Adicionar ao objetivo de poupança';
 
   @override
   String get cmdCapabilityAddSavingsContributionExample =>
@@ -752,7 +752,7 @@ class SPt extends S {
   String get cmdCapabilityDeleteExpense => 'Apagar uma despesa';
 
   @override
-  String get cmdCapabilityDeleteExpenseExample => 'Apaga a despesa [descricao]';
+  String get cmdCapabilityDeleteExpenseExample => 'Apaga a despesa [descrição]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Mudar tema';
@@ -773,10 +773,10 @@ class SPt extends S {
 
   @override
   String get cmdCapabilityChangeLanguageExample =>
-      'Idioma [ingles/portugues/espanhol/frances]';
+      'Idioma [inglês/português/espanhol/francês]';
 
   @override
-  String get cmdCapabilityNavigate => 'Abrir ecra';
+  String get cmdCapabilityNavigate => 'Abrir ecrã';
 
   @override
   String get cmdCapabilityNavigateExample => 'Abre a lista de compras';
@@ -4528,7 +4528,7 @@ class SPt extends S {
   String get barcodeProductFound => 'Produto Encontrado';
 
   @override
-  String get barcodeProductNotFound => 'Produto Nao Encontrado';
+  String get barcodeProductNotFound => 'Produto Não Encontrado';
 
   @override
   String get barcodeLabel => 'Codigo de barras';
@@ -6057,7 +6057,7 @@ class SPt extends S {
   String get coachCompareWithPlus => 'Com Plus';
 
   @override
-  String get coachCompareMemory20 => 'Memoria: 20 msgs';
+  String get coachCompareMemory20 => 'Memória: 20 msgs';
 
   @override
   String get coachCompareDetailedReplies => 'Respostas detalhadas';
@@ -6069,7 +6069,7 @@ class SPt extends S {
   String get coachCompareWithEco => 'Com Eco';
 
   @override
-  String get coachCompareMemory6 => 'Memoria: 6 msgs';
+  String get coachCompareMemory6 => 'Memória: 6 msgs';
 
   @override
   String get coachCompareShortReplies => 'Respostas curtas';
@@ -6079,24 +6079,24 @@ class SPt extends S {
 
   @override
   String coachEndowmentBanner(int remaining) {
-    return 'Estas a usar o modo Plus gratuitamente — o coach lembra as ultimas 20 mensagens ($remaining restantes)';
+    return 'Estás a usar o modo Plus gratuitamente — o coach lembra as últimas 20 mensagens ($remaining restantes)';
   }
 
   @override
   String coachRecommendPro(int cost) {
-    return 'Pergunta complexa detetada — Pro daria uma analise mais detalhada ($cost cr.)';
+    return 'Pergunta complexa detetada — Pro daria uma análise mais detalhada ($cost cr.)';
   }
 
   @override
   String coachRecommendPlus(int cost) {
-    return 'Plus da mais contexto para esta analise ($cost cr.)';
+    return 'Plus dá mais contexto para esta análise ($cost cr.)';
   }
 
   @override
-  String get coachNextStep => 'PROXIMO PASSO';
+  String get coachNextStep => 'PRÓXIMO PASSO';
 
   @override
-  String get coachPendingAction => 'Acao pendente da ultima sessao';
+  String get coachPendingAction => 'Ação pendente da última sessão';
 
   @override
   String coachSuggestedDaysAgo(int daysAgo) {
@@ -6106,12 +6106,12 @@ class SPt extends S {
       other: 'dias',
       one: 'dia',
     );
-    return 'Sugerido ha $daysAgo $_temp0';
+    return 'Sugerido há $daysAgo $_temp0';
   }
 
   @override
   String get coachCapWarning =>
-      'Maximo atingido (150). Usa os teus creditos antes da proxima renovacao!';
+      'Máximo atingido (150). Usa os teus créditos antes da próxima renovação!';
 
   @override
   String coachPackSessions(int plus, int pro) {
@@ -6119,7 +6119,7 @@ class SPt extends S {
   }
 
   @override
-  String get coachCreditsTitle => 'Creditos AI Coach';
+  String get coachCreditsTitle => 'Créditos AI Coach';
 
   @override
   String coachCreditsRemaining(int count) {
@@ -6127,43 +6127,43 @@ class SPt extends S {
   }
 
   @override
-  String get coachRoiInsightPrefix => 'Na ultima sessao Pro, discutimos ';
+  String get coachRoiInsightPrefix => 'Na última sessão Pro, discutimos ';
 
   @override
   String get coachRoiPotential => '. Potencial: ';
 
   @override
-  String get coachRoiCost => '. Custou 5 creditos (€0,05).';
+  String get coachRoiCost => '. Custou 5 créditos (€0,05).';
 
   @override
   String coachCapWarningSheet(int max) {
-    return 'Maximo atingido ($max). Usa os creditos antes de comprar mais.';
+    return 'Máximo atingido ($max). Usa os créditos antes de comprar mais.';
   }
 
   @override
-  String get coachCreditsLabel => 'creditos';
+  String get coachCreditsLabel => 'créditos';
 
   @override
   String get coachBestValue => 'MELHOR VALOR';
 
   @override
   String coachWastedCredits(int wasted) {
-    return 'Perderias $wasted creditos';
+    return 'Perderias $wasted créditos';
   }
 
   @override
   String coachRecommendedPack(int credits) {
-    return 'Recomendamos o pacote de $credits creditos';
+    return 'Recomendamos o pacote de $credits créditos';
   }
 
   @override
   String cmdInvalidAction(String action) {
-    return 'Acao ou parametros invalidos: $action';
+    return 'Ação ou parâmetros inválidos: $action';
   }
 
   @override
   String cmdUnknownAction(String action) {
-    return 'Acao desconhecida: $action';
+    return 'Ação desconhecida: $action';
   }
 
   @override
@@ -6178,7 +6178,7 @@ class SPt extends S {
 
   @override
   String cmdSavingsGoalAdded(String name) {
-    return 'Objetivo de poupanca adicionado: $name';
+    return 'Objetivo de poupança adicionado: $name';
   }
 
   @override
@@ -6188,7 +6188,7 @@ class SPt extends S {
 
   @override
   String cmdShoppingItemNotFound(String name) {
-    return 'Artigo nao encontrado: $name';
+    return 'Artigo não encontrado: $name';
   }
 
   @override
@@ -6198,12 +6198,12 @@ class SPt extends S {
 
   @override
   String cmdSavingsGoalNotFound(String name) {
-    return 'Objetivo de poupanca nao encontrado: $name';
+    return 'Objetivo de poupança não encontrado: $name';
   }
 
   @override
   String cmdContributionAdded(String amount, String name) {
-    return 'Contribuicao adicionada: $amount a $name';
+    return 'Contribuição adicionada: $amount a $name';
   }
 
   @override
@@ -6218,7 +6218,7 @@ class SPt extends S {
 
   @override
   String cmdExpenseNotFound(String description) {
-    return 'Despesa nao encontrada: $description';
+    return 'Despesa não encontrada: $description';
   }
 
   @override
@@ -6251,43 +6251,43 @@ class SPt extends S {
 
   @override
   String get cmdParseError =>
-      'Desculpe, nao consegui entender o seu pedido. Tente reformular.';
+      'Desculpe, não consegui entender o seu pedido. Tente reformular.';
 
   @override
   String get cmdHelpOutput =>
-      'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda';
+      'Comandos disponíveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupança: cria objetivo de poupança [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descrição]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [inglês/português/espanhol/francês]\n- Navegar: abre [ecrã]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda';
 
   @override
   String get coachOfflineBanner =>
-      'Sem ligacao. O coach de IA precisa de ligacao a internet.';
+      'Sem ligação. O coach de IA precisa de ligação a internet.';
 
   @override
   String get coachOfflineSendDisabled =>
-      'Envio desativado enquanto esta sem ligacao.';
+      'Envio desativado enquanto está sem ligação.';
 
   @override
   String get cmdOfflineBanner =>
-      'Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.';
+      'Sem ligação. Apenas comandos locais (tema, navegação) funcionam.';
 
   @override
   String get cmdOfflineBlocked =>
-      'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.';
+      'Este comando precisa de ligação a internet. Tente um comando local como mudar o tema ou navegar.';
 
   @override
   String coachFreeTrialRemaining(int count) {
-    return '$count pergunta(s) gratuita(s) restante(s) este mes';
+    return '$count pergunta(s) gratuita(s) restante(s) este mês';
   }
 
   @override
   String get coachFreeTrialExhausted =>
-      'Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.';
+      'Utilizou todas as suas perguntas gratuitas este mês. Atualize para continuar a usar o AI Coach.';
 
   @override
   String get coachFreeTrialUpgrade => 'Atualizar para coaching ilimitado';
 
   @override
   String coachFreeTrialBanner(int used, int total) {
-    return 'Periodo gratuito: $used/$total perguntas usadas este mes';
+    return 'Período gratuito: $used/$total perguntas usadas este mês';
   }
 
   @override
