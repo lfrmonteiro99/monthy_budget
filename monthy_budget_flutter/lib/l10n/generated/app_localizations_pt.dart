@@ -3420,6 +3420,10 @@ class SPt extends S {
       'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.';
 
   @override
+  String get onbTourBackdropLabel =>
+      'Tour de introdução. Toque fora do destaque para avançar ou em Saltar para terminar.';
+
+  @override
   String get taxDeductionTitle => 'Deduções IRS';
 
   @override

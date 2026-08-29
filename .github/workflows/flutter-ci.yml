@@ -371,7 +371,16 @@ jobs:
   # iOS compilation check: runs on push to main only (macOS runners are expensive).
   # No code signing — just verifies the project compiles for iOS.
   build-ios:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Corre em main, e SOB PROCURA em qualquer ref.
+    #
+    # Sem o workflow_dispatch, este job só existia depois do código já ter entrado:
+    # não corria em PRs nem podia ser lançado num branch, portanto qualquer correcção
+    # ao build de iOS só era verificável depois de estar em main — que foi como ele
+    # ficou vermelho durante seis semanas sem ninguém poder testar a saída.
+    #
+    # Deliberadamente NÃO corre em cada PR: é um runner macOS, e este job nunca
+    # protegeu PRs. Sob procura chega para validar quando se mexe no iOS.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: macos-latest
     timeout-minutes: 30
     defaults:
