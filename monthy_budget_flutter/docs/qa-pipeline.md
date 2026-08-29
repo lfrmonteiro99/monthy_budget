@@ -100,6 +100,34 @@ Quando um issue encrava, escala a **estratégia**, não o issue:
 | 3 | volta ao curator **com o histórico de falhas** — o briefing é reescrito a partir do que falhou, não do palpite inicial |
 | 4+ | força `split` em pedaços que caibam |
 
+### O travão das corridas sem veredicto
+
+Três estados devolvem o issue a si próprios quando a corrida não produz veredicto:
+`qa:ready` (implementador), `qa:premerge` e `qa:verify` (os dois testers). É o
+instinto certo — é falha da *corrida*, não do issue.
+
+Mas nenhum desses despachos incrementa contador (o `escalate_if_stuck` só dispara
+no caminho de `qa:blocked-impl`), portanto o requeue não tinha chão:
+
+```
+qa:ready -> implementador -> 45 min de timeout -> sem veredicto -> qa:ready -> ...
+```
+
+Medido no #1307: `rc=124` ao fim dos 2700s, motor saudável, os dois cooldowns de
+quota no passado, e o contador de tentativas ainda a marcar 1 no fim.
+
+Um **timeout** é diferente em espécie das outras maneiras de não produzir veredicto.
+Um agente que rebenta não disse nada sobre o issue; um agente que gastou o relógio
+inteiro disse: o trabalho não cabe numa corrida. Dois seguidos vão para
+`qa:blocked-spec` — é o curator que reescreve mais pequeno ou parte.
+
+| Como a corrida acabou | Efeito no contador |
+|---|---|
+| timeout (`rc=124`) | +1; ao 2.º, escala para `qa:blocked-spec` |
+| erro do agente | reinicia — não diz nada sobre o tamanho do issue |
+| degradada (sem quota, `exit 75`) | intocado — o motor nem chegou a tentar |
+| veredicto escrito | limpo |
+
 Validado no #1202: falhou 3 vezes a reservar espaço para o FAB dentro do ecrã
 interior; a reanálise identificou que o FAB vive no `Scaffold` exterior, e a
 abordagem seguinte (widget `FabClearance` no mesmo Scaffold) passou à primeira.

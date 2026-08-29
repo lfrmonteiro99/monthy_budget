@@ -64,14 +64,24 @@ Fica em \`$L_VERIFY\` para nova tentativa."
     exit 0
     ;;
   3)
-    log "SEM VEREDICTO — fica em $L_VERIFY para nova tentativa"
-    comment_issue "$ISSUE" "## QA: corrida sem veredicto
+    # No verdict on a healthy run. Requeueing to the same state is right until
+    # the run has burned the whole clock twice — see note_verdictless_run.
+    if N=$(note_verdictless_run "$ISSUE" "$UI_TESTER_LAST_RC"); then
+      log "SEM VEREDICTO — fica em $L_VERIFY para nova tentativa"
+      comment_issue "$ISSUE" "## QA: corrida sem veredicto
 
 A corrida terminou sem escrever veredicto (ver \`$UI_TESTER_LOG\`).
 Falha da corrida, não do fix — fica na fila para ser verificado de novo."
+    else
+      log "SEM VEREDICTO pela ${MAX_TIMEOUTS}.ª vez por timeout — a devolver ao curator"
+      comment_issue "$ISSUE" "$(verdictless_escalation_body "verificador de QA" "$MAX_TIMEOUTS" "${VERIFY_TIMEOUT:-1800}")"
+      set_state "$ISSUE" "$L_BLOCKED_SPEC"
+    fi
     exit 0
     ;;
 esac
+
+clear_verdictless_runs "$ISSUE"
 
 VERDICT=$(jqv "$VERDICT_FILE" '.verdict' 'inconclusive')
 SUMMARY=$(jqv "$VERDICT_FILE" '.summary' '(sem resumo)'); SUMMARY="${SUMMARY:0:1500}"
