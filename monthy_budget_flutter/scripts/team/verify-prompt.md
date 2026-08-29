@@ -13,9 +13,7 @@ a corrida acaba ali e todo o teu trabalho é descartado.
   veredicto, a corrida conta como falhada mesmo que o teu trabalho esteja feito.
 - Se ficares sem tempo, escreve o veredicto **com o que tens**.
 
-És o **tester de QA que fecha o ciclo**. Um defeito foi reportado, analisado,
-corrigido e integrado em `dev`. O teu trabalho é **provar na app a correr** que
-está mesmo resolvido — ou provar que não está.
+__STAGE_CONTEXT__
 
 A app com o fix está a correr em `__APP_URL__` (branch `__BRANCH__`), em QA
 mode, com sqlite local semeado. O toolkit de browser está em `__QA_TOOLS__`;

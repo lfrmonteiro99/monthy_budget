@@ -11,8 +11,9 @@ fechar. Vive em `scripts/team/`.
 | **Critic** | `critic.sh` | Conduz a app num browser e abre issues do que encontra | `main` |
 | **Curator** | `curator.sh` | Investiga a causa raiz e escreve o briefing (causa, plano, critérios de aceitação, como testar) | — |
 | **Implementador** | `implement.sh` | Corrige em `qa/issue-N` e abre PR para `dev` | — |
-| **Reviewer** | `review.sh` | Lê o diff, corre os testes, integra ou devolve | — |
-| **QA Verifier** | `verify.sh` | Volta a testar o fix na app a correr e fecha o issue | `dev` |
+| **Reviewer** | `review.sh` | Lê o diff, corre os testes, aprova ou devolve | — |
+| **Gate pré-merge** | `premerge.sh` | Testa a app compilada do branch do PR e **só então** integra | `qa/issue-N` |
+| **QA Verifier** | `verify.sh` | Volta a testar o fix já integrado e fecha o issue | `dev` |
 | **Promoção** | `promote.sh` | Leva `dev` para `main` em lote: fim da janela de quota, 6 fixes, ou fila vazia | — |
 | **Orquestrador** | `orchestrator.sh` | Despacha tudo pela máquina de estados | — |
 
@@ -24,7 +25,13 @@ main ─────────────────────────
   └──► dev ───────────────────┘       staging de QA. O VERIFIER testa aqui.
          ▲                            Promovido em lote (ver Promoção).
          └── qa/issue-N               branches do implementador. PR ──► dev.
+                                      O GATE PRÉ-MERGE testa aqui, antes do merge.
 ```
+
+Três branches, três testes no browser, e nenhum deles é opcional: o critic
+pergunta "o que está mal na produção", o gate pré-merge pergunta "isto resolve
+mesmo, antes de entrar", e o verifier pergunta "continua a resolver depois de
+integrado ao lado dos outros fixes".
 
 O critic testa `main` de propósito: interessa saber o que está mal na app tal
 como está publicada. O verifier testa `dev` porque é lá que o fix está.
@@ -38,19 +45,45 @@ registo de auditoria; a label é o que o orquestrador despacha.
 qa:triage ──curator──► qa:ready ──implementador──► qa:review ──reviewer──┐
     ▲                     ▲                            │                │
     │                     │                     blocked-impl        approved
-    │                     │                            │            (merged)
-    │              qa:blocked-impl ◄────────────────────┘                │
-    │                     ▲                                             ▼
-    │                     │                                        qa:verify
-    │                     │  fail-impl                                  │
-    │                     └──────────────────────────────────────────────┤
-    │                                                                   │
-qa:blocked-spec ◄──── blocked-spec / fail-spec ─────────────────────────┤
-                                                                  pass  │
-                                                                        ▼
-                                                                    qa:done
-                                                                   (fechado)
+    │                     │                            │         (NÃO integra)
+    │              qa:blocked-impl ◄────────────────────┤                │
+    │                     ▲                             │                ▼
+    │                     │                             │          qa:premerge
+    │                     │                             │   gate no browser sobre
+    │                     │                             │   o branch do PR
+    │                     │                  fail-impl  │                │
+    │                     │                             ├────────────────┤
+    │                     │                                        pass  │
+    │                     │                                    (merge ──►dev)
+    │                     │                                              ▼
+    │                     │                                         qa:verify
+    │                     │  fail-impl                                   │
+    │                     └───────────────────────────────────────────────┤
+    │                                                                    │
+qa:blocked-spec ◄──── blocked-spec / fail-spec ──────────────────────────┤
+                                                                   pass  │
+                                                                         ▼
+                                                                     qa:done
+                                                                    (fechado)
 ```
+
+### Porque o merge acontece depois do teste, e não antes
+
+O reviewer lê o diff e corre a suite. Nenhuma das duas coisas mostra que a **app**
+funciona; só conduzir a UI mostra. Esse teste já existia, mas corria *depois* do
+merge — e a pipeline não tem revert. Quando o verifier reprovava, o commit partido
+**ficava em `dev`** e o issue voltava a `qa:blocked-impl`.
+
+Pior: `maybe_promote` só adia a promoção por issues em `qa:verify`. Um fix já
+provado partido está em `qa:blocked-impl`, que não bloqueia nada — portanto podia
+ser promovido para `main` enquanto a re-correção ainda estava na fila.
+
+Testar antes do merge fecha os dois por construção: nada chega a `dev` sem ter sido
+conduzido num browser. O `qa:verify` mantém-se porque responde a outra pergunta —
+não "isto resolve?", mas "continua a resolver depois de integrado?".
+
+Uma corrida do gate que não produz veredicto **não** faz merge: o issue volta a
+`qa:premerge` e o PR fica aberto. Silêncio não é consentimento.
 
 **Não existe `qa:needs-human`.** Não há ninguém do outro lado, por isso "escalar para
 humano" nunca foi uma resolução — era uma forma de perder trabalho em silêncio (cinco
@@ -66,6 +99,34 @@ Quando um issue encrava, escala a **estratégia**, não o issue:
 | 1-2 | implementa normalmente |
 | 3 | volta ao curator **com o histórico de falhas** — o briefing é reescrito a partir do que falhou, não do palpite inicial |
 | 4+ | força `split` em pedaços que caibam |
+
+### O travão das corridas sem veredicto
+
+Três estados devolvem o issue a si próprios quando a corrida não produz veredicto:
+`qa:ready` (implementador), `qa:premerge` e `qa:verify` (os dois testers). É o
+instinto certo — é falha da *corrida*, não do issue.
+
+Mas nenhum desses despachos incrementa contador (o `escalate_if_stuck` só dispara
+no caminho de `qa:blocked-impl`), portanto o requeue não tinha chão:
+
+```
+qa:ready -> implementador -> 45 min de timeout -> sem veredicto -> qa:ready -> ...
+```
+
+Medido no #1307: `rc=124` ao fim dos 2700s, motor saudável, os dois cooldowns de
+quota no passado, e o contador de tentativas ainda a marcar 1 no fim.
+
+Um **timeout** é diferente em espécie das outras maneiras de não produzir veredicto.
+Um agente que rebenta não disse nada sobre o issue; um agente que gastou o relógio
+inteiro disse: o trabalho não cabe numa corrida. Dois seguidos vão para
+`qa:blocked-spec` — é o curator que reescreve mais pequeno ou parte.
+
+| Como a corrida acabou | Efeito no contador |
+|---|---|
+| timeout (`rc=124`) | +1; ao 2.º, escala para `qa:blocked-spec` |
+| erro do agente | reinicia — não diz nada sobre o tamanho do issue |
+| degradada (sem quota, `exit 75`) | intocado — o motor nem chegou a tentar |
+| veredicto escrito | limpo |
 
 Validado no #1202: falhou 3 vezes a reservar espaço para o FAB dentro do ecrã
 interior; a reanálise identificou que o FAB vive no `Scaffold` exterior, e a

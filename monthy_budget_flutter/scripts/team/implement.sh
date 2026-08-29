@@ -161,15 +161,25 @@ conseguiu concluir a implementação. **Isto não é um problema do issue** — 
     wt_remove "$WT"
     exit 0
   fi
-  log "SEM VEREDICTO — volta a $L_READY para nova tentativa"
-  set_state "$ISSUE" "$L_READY"
-  comment_issue "$ISSUE" "## Implementador: corrida sem veredicto
+  # Requeueing is right until it stops being right. qa:ready has no attempt counter,
+  # so without this the issue comes straight back and burns the same clock again.
+  if N=$(note_verdictless_run "$ISSUE" "$AGENT_RC"); then
+    log "SEM VEREDICTO — volta a $L_READY para nova tentativa${N:+ (timeout $N/$MAX_TIMEOUTS)}"
+    set_state "$ISSUE" "$L_READY"
+    comment_issue "$ISSUE" "## Implementador: corrida sem veredicto
 
 Terminou sem escrever veredicto (ver \`$LOG_DIR/implement-$ISSUE.log\`). Falha da
 corrida, não do issue — volta à fila."
+  else
+    log "SEM VEREDICTO pela ${MAX_TIMEOUTS}.ª vez por timeout — a devolver ao curator"
+    comment_issue "$ISSUE" "$(verdictless_escalation_body "implementador" "$MAX_TIMEOUTS" "${IMPLEMENT_TIMEOUT:-2700}")"
+    set_state "$ISSUE" "$L_BLOCKED_SPEC"
+  fi
   wt_remove "$WT"
   exit 0
 fi
+
+clear_verdictless_runs "$ISSUE"
 
 OUTCOME=$(jqv "$VERDICT_FILE" '.outcome' 'needs-human')
 SUMMARY=$(jqv "$VERDICT_FILE" '.summary' 'correção automática'); SUMMARY="${SUMMARY:0:200}"

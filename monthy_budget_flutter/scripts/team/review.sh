@@ -1,7 +1,12 @@
 #!/bin/bash
-# review.sh — the REVIEWER. Reads a PR targeting `dev`, comments its findings,
-# and either merges it or routes it back: code problems to the implementer,
-# briefing problems to the curator.
+# review.sh — the REVIEWER. Reads a PR targeting `dev`, comments its findings, and
+# routes it: approved code goes to the pre-merge browser gate (premerge.sh, which
+# owns the merge), code problems go back to the implementer, briefing problems to
+# the curator.
+#
+# It deliberately does NOT merge. Reading a diff and running a suite cannot show
+# that the app works; only driving the UI can, and that has to happen before the
+# code is in `dev`, because nothing here reverts.
 #
 # Usage: review.sh <pr_number>
 set -uo pipefail
@@ -177,96 +182,35 @@ case "$VERDICT" in
   approved)
     gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: aprovado
 
-$SUMMARY" >/dev/null 2>&1 || true
+$SUMMARY
 
-    # Distinguish WHY a merge fails before blaming anyone.
+O código está aceite. **Ainda não é integrado**: segue para o gate pré-merge, que
+conduz a app construída a partir deste branch e só depois faz o merge." >/dev/null 2>&1 || true
+
+    # The reviewer NO LONGER MERGES. Approving the diff says the code is sound; it
+    # says nothing about whether the app works, and the pipeline has no revert — a
+    # fix merged here and later failed on `dev` stays in `dev`. premerge.sh drives
+    # the real UI on this branch first and owns the merge (see its header).
     #
-    # `gh pr merge` refuses while any check is red, and today's checks go red on
-    # GitHub infrastructure (429/503 downloading the flutter action) as readily as
-    # on real failures. Treating that as the implementer's fault sends perfectly
-    # good work back to be redone — observed on PR #1239, which was MERGEABLE with
-    # only UNSTABLE checks.
-    #
-    # So on failure: if the tree is genuinely conflicted or behind, that IS the
-    # implementer's problem. If it is only the check state, and THIS reviewer just
-    # ran analyze and the full suite against this exact code and approved it, then
-    # a flaked CI job is not a reason to block. `dev` is unprotected staging, so we
-    # complete the merge with --admin and say plainly that we did and why. `main`
-    # stays fully protected — nothing here can touch it.
-    # Whether the merge happened is decided by READING the PR, never by trusting
-    # an exit code. `gh pr merge` returns non-zero for things that occur AFTER a
-    # successful merge — deleting the branch, for one — and it also reports
-    # "already merged" as an error. Observed on PR #1239: the admin merge landed on
-    # dev, gh returned non-zero, the script recorded a failure and marked the issue
-    # blocked-impl, queueing a redo of work that was already integrated.
-    merge_landed() {
-      [ "$(gh pr view "$PR" --repo "$REPO" --json state --jq .state 2>/dev/null)" = "MERGED" ]
-    }
+    # Its suite result has to survive this run, though: premerge.sh needs to know
+    # whether the full suite actually passed before it is entitled to complete a
+    # merge that unstable CI checks refused, and $VERDICT_FILE is deleted below.
+    TESTS_OK=$(jqv "$VERDICT_FILE" '.tests_pass' 'false')
+    printf '%s' "$TESTS_OK" > "$STATE_DIR/review-tests-pass-$PR" 2>/dev/null || true
 
-    MERGE_OK=0
-    gh pr merge "$PR" --repo "$REPO" --squash --delete-branch >/dev/null 2>&1 || true
-    if merge_landed; then
-      MERGE_OK=1
-    else
-      MSTATUS=$(gh pr view "$PR" --repo "$REPO" --json mergeStateStatus --jq .mergeStateStatus 2>/dev/null || echo "")
-      TESTS_OK=$(jqv "$VERDICT_FILE" '.tests_pass' 'false')
-      log "merge recusado (mergeStateStatus=$MSTATUS, reviewer tests_pass=$TESTS_OK)"
-      case "$MSTATUS" in
-        DIRTY|BEHIND|BLOCKED)
-          # A conflicted or stale branch is NOT bad code — the review itself may have
-          # been fine. Say so explicitly, so the implementer resolves the conflict
-          # instead of re-doing work that was already accepted. implement.sh leaves
-          # the conflict markers in the worktree for exactly this.
-          gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: aprovado, mas o branch não integra (\`$MSTATUS\`)
-
-O código foi **aprovado** — o problema é só que o branch não integra em \`$BASE\`,
-por conflito ou por estar atrasado.
-
-**Não refaças o trabalho.** Na próxima passagem o \`$BASE\` é integrado neste branch
-e, se houver conflito, os marcadores ficam na árvore para resolveres por intenção:
-percebe o que cada lado queria e preserva as duas intenções. Depois corre a suite
-completa e reenvia." >/dev/null 2>&1 || true
-          ;;
-        *)
-          if [ "$TESTS_OK" = "true" ] && [ "$BASE" = "$BASE_BRANCH" ]; then
-            log "checks instáveis mas o reviewer correu a suite e aprovou — a concluir o merge"
-            gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: merge concluído apesar de checks instáveis
-
-O \`gh pr merge\` foi recusado por estado de checks (\`$MSTATUS\`), não por
-conflito. Os workflows falharam a descarregar a \`flutter-action\` (429/503 da
-infraestrutura do GitHub), o que não diz nada sobre este código.
-
-Este reviewer correu \`flutter analyze\` e a suite completa contra este commit e
-aprovou. \`$BASE\` é staging de QA sem protecção, por isso o merge foi concluído.
-O \`main\` mantém as suas protecções intactas." >/dev/null 2>&1 || true
-            gh pr merge "$PR" --repo "$REPO" --squash --delete-branch --admin >/dev/null 2>&1 || true
-            merge_landed && MERGE_OK=1
-          fi
-          ;;
-      esac
-    fi
-
-    if [ "$MERGE_OK" = "1" ]; then
-      log "PR #$PR integrado em $BASE"
-      if [ -n "$ISSUE" ]; then
-        # NOT closed here. The issue only closes once the QA verifier has
-        # re-tested the fix on the running dev build — a merged PR proves the
-        # code was accepted, not that the defect is gone.
-        comment_issue "$ISSUE" "## Reviewer: aprovado e integrado
+    if [ -n "$ISSUE" ]; then
+      comment_issue "$ISSUE" "## Reviewer: aprovado — a caminho do gate pré-merge
 
 $SUMMARY
 
-PR #$PR integrado em \`$BASE\`. Em espera de verificação de QA em \`$BASE\`."
-        set_state "$ISSUE" "$L_VERIFY"
-      fi
+PR #$PR aprovado na leitura do código e na suite de testes. **Não foi integrado.**
+Segue para o gate pré-merge, que testa a app compilada a partir de \`$BRANCH\` e só
+integra em \`$BASE\` se o defeito estiver mesmo resolvido."
+      set_state "$ISSUE" "$L_PREMERGE"
     else
-      log "merge falhou (conflito ou gate)"
-      gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: aprovado mas o merge falhou
-
-Provavelmente conflito com \`$BASE\` ou um gate em falta. O implementador deve
-actualizar o branch." >/dev/null 2>&1 || true
-      [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_BLOCKED_IMPL"
+      log "AVISO: PR #$PR aprovado mas sem issue associado — não há estado para avançar"
     fi
+    log "PR #$PR aprovado -> $L_PREMERGE (merge adiado para o gate)"
     ;;
 
   blocked-impl)
