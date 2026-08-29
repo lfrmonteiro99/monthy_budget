@@ -72,6 +72,7 @@ TutorialCoachMark buildMealsTour({
 
   return TutorialCoachMark(
     targets: targets,
+    backgroundSemanticLabel: l10n.onbTourBackdropLabel,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
     hideSkip: false,

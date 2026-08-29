@@ -3421,6 +3421,10 @@ class SEs extends S {
       'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más — solo escribe lo que necesitas.';
 
   @override
+  String get onbTourBackdropLabel =>
+      'Recorrido de introducción. Toca fuera del destacado para continuar o en Omitir para terminar.';
+
+  @override
   String get taxDeductionTitle => 'Deducciones Fiscales';
 
   @override
