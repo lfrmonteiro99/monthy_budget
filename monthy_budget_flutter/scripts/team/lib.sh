@@ -225,6 +225,92 @@ no_verdict_is_real_failure() {
   return 0
 }
 
+# ── Verdictless runs: the brake on the states that requeue themselves ──────
+#
+# Three states hand an issue back to ITSELF when a run produces no verdict —
+# qa:ready (implementer), qa:premerge and qa:verify (the two testers). That is the
+# right instinct: a run that died is a failure of the RUN, not of the issue, and
+# punishing the issue for it would throw away good work.
+#
+# But none of those three dispatches increments a counter — `escalate_if_stuck`
+# only ever fires on the qa:blocked-impl path. So the requeue has no floor:
+#
+#   qa:ready -> implementer -> 45-minute timeout -> no verdict -> qa:ready -> ...
+#
+# Measured on #1307: rc=124 after the full 2700s, healthy engine, both quota
+# cooldowns in the past, and `attempts/1307` still reading 1 afterwards. Nothing in
+# the state machine would ever have stopped that, and each lap costs 45 minutes.
+#
+# A TIMEOUT is different in kind from the other ways a run yields nothing. An agent
+# that errors out has told us nothing about the issue. An agent that ran out the
+# entire clock has: the work does not fit in one run. Two of those in a row is not
+# bad luck, it is a briefing that needs rewriting or splitting — which is the
+# curator's problem, not the implementer's.
+MAX_TIMEOUTS="${TEAM_MAX_TIMEOUTS:-2}"
+TIMEOUTS_DIR="$STATE_DIR/timeouts"
+mkdir -p "$TIMEOUTS_DIR" 2>/dev/null || true
+
+# Record a verdictless run. Echoes the new consecutive-timeout count.
+#
+# Returns 0 when the caller should just requeue as before, 1 when the issue has now
+# timed out often enough that requeueing it again would be the loop above.
+#
+# A non-timeout failure RESETS the count rather than adding to it: the run failing
+# for its own reasons is not evidence about the size of the issue, and letting those
+# accumulate would escalate issues that are perfectly implementable.
+note_verdictless_run() {
+  local issue="$1" rc="${2:-}" n
+  local f="$TIMEOUTS_DIR/$issue"
+
+  # A degraded run carries NO information either way: the engine never got to try,
+  # so the count must survive it untouched. Resetting here would be a live hole —
+  # an issue alternating timeout / occupied-slot would reset on every other lap and
+  # never reach the escalation, which is precisely the loop this exists to break.
+  # The callers already filter these out; this is belt and braces.
+  if [ "$rc" = "75" ]; then
+    return 0
+  fi
+
+  if [ "$rc" != "124" ]; then
+    rm -f "$f"
+    return 0
+  fi
+
+  n=$(( $(cat "$f" 2>/dev/null || echo 0) + 1 ))
+  echo "$n" > "$f"
+  printf '%s' "$n"
+  [ "$n" -ge "$MAX_TIMEOUTS" ] || return 0
+  rm -f "$f"   # escalated: the next stage starts from zero
+  return 1
+}
+
+# A run that produced a verdict clears the history: whatever was making the agent
+# run out of clock is no longer happening, and a count carried across unrelated
+# cycles would escalate an issue for something already resolved.
+clear_verdictless_runs() {
+  rm -f "$TIMEOUTS_DIR/$1" 2>/dev/null || true
+}
+
+# The comment that goes with an escalation. Kept here so all three callers say the
+# same thing — a timeout escalation that reads differently per stage is a timeout
+# escalation nobody can grep for.
+verdictless_escalation_body() {
+  local stage="$1" n="$2" secs="$3"
+  cat <<BODY
+## Orquestrador: $n corridas seguidas sem resultado ($stage)
+
+Cada uma esgotou o tempo máximo (${secs}s) sem escrever veredicto. O motor estava
+saudável — isto não é falta de quota nem uma corrida degradada. Um agente que gasta
+o relógio inteiro está a dizer que **o trabalho não cabe numa corrida**.
+
+Repetir seria entrar em ciclo: o issue voltaria à fila e falharia da mesma maneira.
+
+**Curator:** o problema é de tamanho ou de abordagem, não de execução. Reescreve a
+análise mais pequena, ou parte o issue em pedaços que caibam. Os comentários acima
+dizem até onde cada tentativa chegou.
+BODY
+}
+
 # ── The UI tester ──────────────────────────────────────────────────────────
 #
 # Build a branch, serve it, and drive the real app against an issue's acceptance
@@ -250,6 +336,7 @@ no_verdict_is_real_failure() {
 # Sets UI_TESTER_SCRATCH and UI_TESTER_LOG for the caller to quote in comments.
 UI_TESTER_SCRATCH=""
 UI_TESTER_LOG=""
+UI_TESTER_LAST_RC=""
 
 run_ui_tester() {
   local issue="$1" branch="$2" port="$3" verdict_file="$4" stage="$5" stage_context="$6"
@@ -319,6 +406,9 @@ run_ui_tester() {
     AGENT_ADD_DIRS="$UI_TESTER_SCRATCH:$qa_tools" \
     bash "$TEAM_SCRIPT_DIR/run-agent.sh" "$prompt" "$qa_tools" "${UI_TESTER_TIMEOUT:-1800}" \
     > "$UI_TESTER_LOG" 2>&1; rc=$?
+  # Exposed because the caller has to tell a TIMEOUT apart from any other way the
+  # run yielded nothing — see note_verdictless_run.
+  UI_TESTER_LAST_RC="$rc"
 
   [ -f "$verdict_file" ] && return 0
   no_verdict_is_real_failure main "$rc" || return 2
