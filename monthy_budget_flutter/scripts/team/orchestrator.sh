@@ -139,6 +139,21 @@ issues_with() {
 
 first_with() { issues_with "$1" | head -1; }
 
+# The first issue in a state that no slot is already working on.
+#
+# first_with alone is not enough once dispatches are detached. qa:premerge and
+# qa:verify keep their label for the whole run, so the next cycle would hand the
+# SAME issue to another slot — two gates on one PR, two verifiers on one issue,
+# both writing verdicts over each other.
+first_unclaimed() {
+  local n
+  while read -r n; do
+    [ -n "$n" ] || continue
+    issue_in_flight "$n" || { echo "$n"; return 0; }
+  done < <(issues_with "$1")
+  echo ""
+}
+
 # ── Attempt budget per issue ───────────────────────────────────────────────
 #
 # Rework outranks new work in the dispatch order, which is right — finishing what
@@ -264,8 +279,12 @@ mark_reviewed() {
 cleanup_stale() {
   # Kill only OUR agent tree, via the pgid run-agent.sh recorded, and only when
   # the lock is free (so no live agent is killed mid-run).
+  # With a fleet, holding ONE lock proves nothing about the other N-1. Deleting a
+  # live agent's verdict from another slot is exactly the bug that once destroyed
+  # every finding the `data` dimension produced — so nothing is deleted unless the
+  # whole fleet is idle.
   local lock="/tmp/monthy-budget-agent.main.lock"
-  if flock -w 0 -n "$lock" true 2>/dev/null; then
+  if all_slots_free && flock -w 0 -n "$lock" true 2>/dev/null; then
 
     # Stale verdicts, but ONLY the write-path roles this orchestrator owns, and
     # only now that we know none of its agents is live.
@@ -316,10 +335,19 @@ cleanup_stale() {
 # An issue stuck in qa:wip with no agent alive means the implementer died. Left
 # alone it blocks that issue forever, because nothing dispatches on qa:wip.
 rescue_stuck_wip() {
+  # Only when the WHOLE fleet is idle.
+  #
+  # This used to gate on the single `main` lock, which the parallel dispatches no
+  # longer take — so the guard would always pass, and an issue whose implementer was
+  # alive on a slot would be "rescued" back to qa:ready and handed to a second
+  # implementer on the same branch. That is the lost-work scenario this pipeline was
+  # serialised to avoid, reintroduced by the thing meant to protect against it.
+  all_slots_free || return 0
   local lock="/tmp/monthy-budget-agent.main.lock"
   flock -w 0 -n "$lock" true 2>/dev/null || return 0   # an agent is running; leave it
   local issue pr
   for issue in $(issues_with "$L_WIP"); do
+    issue_in_flight "$issue" && continue
     # "No agent alive" does NOT mean "no work done". The implementer opens the PR and
     # only then transitions the issue, so a crash in that window leaves a real,
     # complete PR behind on an issue still marked qa:wip. Demoting that to qa:ready
@@ -346,6 +374,90 @@ existe PR aberto para \`qa/issue-$issue\`.
 Devolvido a \`$L_READY\` para nova tentativa."
     set_state "$issue" "$L_READY"
   done
+}
+
+# ── Parallel slots ─────────────────────────────────────────────────────────
+#
+# The write-path roles used to share one lock, on the reasoning at the top of this
+# file: two agents pushing at once is how work gets lost. True for the SAME issue,
+# false for different ones — each implementer gets its own worktree and its own
+# qa/issue-N branch, so there is nothing for them to collide over.
+#
+# What they DO collide over, and what this bookkeeping exists for:
+#
+#   the lock      run-agent.sh aborts with exit 75 when its slot is taken, so each
+#                 concurrent dispatch needs a slot of its own (main-1..main-N).
+#   the port      the pre-merge gate serves the PR's branch. Two gates on one port
+#                 is not just a clash: serve-app.sh frees the port of whatever else
+#                 holds it, so gate B kills gate A's server and A's tester carries
+#                 on against B's build — a verdict about the wrong branch.
+#   the issue     qa:premerge and qa:verify do not change label while the run is in
+#                 flight, so without a registry the next cycle dispatches the same
+#                 issue again on another slot.
+#   the verdicts  cleanup_stale deletes write-path verdict files. With one slot,
+#                 holding its lock proved no agent was live. With N it proves
+#                 nothing about the other N-1 — and deleting a live agent's verdict
+#                 is precisely the bug that once destroyed the critic's findings.
+declare -A SLOT_PID=()     # slot index -> pid of the dispatched role
+declare -A SLOT_WHAT=()    # slot index -> "role:issue", for logging and dedup
+
+slot_lock_free() { flock -w 0 -n "/tmp/monthy-budget-agent.main-$1.lock" true 2>/dev/null; }
+
+all_slots_free() {
+  [ "${#SLOT_PID[@]}" -eq 0 ] || return 1
+  local k
+  for k in $(seq 1 "$MAX_PARALLEL"); do slot_lock_free "$k" || return 1; done
+  return 0
+}
+
+busy_slots() { echo "${#SLOT_PID[@]}"; }
+
+# Collect finished dispatches. Called at the top of every cycle.
+reap_slots() {
+  local k pid
+  for k in "${!SLOT_PID[@]}"; do
+    pid="${SLOT_PID[$k]}"
+    if ! kill -0 "$pid" 2>/dev/null; then
+      wait "$pid" 2>/dev/null
+      log "slot $k libertado (${SLOT_WHAT[$k]})"
+      unset 'SLOT_PID[$k]' 'SLOT_WHAT[$k]'
+    fi
+  done
+}
+
+# A free slot index, or "" when the fleet is full. Requires BOTH our bookkeeping and
+# the lock file to be free: a previous run killed mid-flight can leave the lock held
+# by an agent we no longer track, and dispatching there would abort with exit 75.
+free_slot() {
+  local k
+  for k in $(seq 1 "$MAX_PARALLEL"); do
+    [ -n "${SLOT_PID[$k]:-}" ] && continue
+    slot_lock_free "$k" || continue
+    echo "$k"; return 0
+  done
+  echo ""
+}
+
+# Is this issue already being worked on right now?
+issue_in_flight() {
+  local issue="$1" k
+  for k in "${!SLOT_WHAT[@]}"; do
+    [ "${SLOT_WHAT[$k]##*:}" = "$issue" ] && return 0
+  done
+  return 1
+}
+
+# Dispatch a role into a slot, detached. The slot number decides the agent lock AND
+# the gate's port, so nothing needs to coordinate beyond picking the number.
+dispatch() {
+  local slot="$1" role="$2" arg="$3" label="$4"
+  log "$label (slot $slot)"
+  TEAM_AGENT_SLOT="main-$slot" \
+  TEAM_PORT_PREMERGE="$(( PORT_PREMERGE + slot - 1 ))" \
+    nohup bash "$SCRIPT_DIR/$role.sh" "$arg" \
+      >> "$LOG_DIR/$role-slot$slot.log" 2>&1 &
+  SLOT_PID[$slot]=$!
+  SLOT_WHAT[$slot]="$role:$arg"
 }
 
 # ── Role dispatch ──────────────────────────────────────────────────────────
@@ -440,6 +552,14 @@ maybe_promote() {
   # Silent: it returned without logging unless forced, so a pipeline that always had
   # something in review simply never promoted and never said why. dev reached 8
   # commits past the threshold with no trace in the log.
+  # promote.sh assumes nothing is mid-flight. With detached dispatches that stopped
+  # being free: a gate that merges into dev while the promotion PR is being opened
+  # puts an unverified fix into main between the two reads.
+  if [ "$(busy_slots)" -gt 0 ]; then
+    log "promoção adiada: $(busy_slots) slot(s) ainda a trabalhar"
+    return 0
+  fi
+
   local unverified
   unverified=$(issues_with "$L_VERIFY" | grep -c . || true)
   if [ "$unverified" -ne 0 ]; then
@@ -589,6 +709,7 @@ while true; do
   CYCLE=$((CYCLE + 1))
   log "──── ciclo $CYCLE (loops concluídos: $LOOPS) ────"
 
+  reap_slots
   cleanup_stale
 
   # ── End of a usage window: ship, then KEEP WORKING on the fallback ────────
@@ -642,7 +763,10 @@ while true; do
 
   maybe_promote "cadência"
 
-  DID=0
+  # Fill every free slot this cycle, in priority order, instead of dispatching one
+  # thing and sleeping. DID is gone: with a fleet, "did the cycle do something" is
+  # not a yes/no — it is how many slots were filled.
+  FILLED=0
 
   # 0. Curate raw critic findings — DETACHED, and FIRST, before anything blocking.
   #
@@ -661,12 +785,23 @@ while true; do
   # It runs FIRST instead, and sets no DID: launching the curator is not the cycle
   # having done its work, so the same pass goes on to dispatch a heavy role. That is
   # where the throughput comes from.
-  if [ -z "$(first_with "$L_TRIAGE")" ]; then
+  #
+  # It serves BOTH curator queues, rework first: an issue in qa:blocked-spec was sent
+  # back because its briefing was wrong, and every cycle it waits is a cycle the
+  # implementer could spend building against that same wrong briefing again.
+  #
+  # It is deliberately NOT part of the parallel fleet. curator.sh holds a single
+  # named lock of its own, so a second one dispatched into a slot would abort with
+  # exit 75 — and cleanup_stale relies on that one lock to know whether a curator is
+  # live before deleting its verdict.
+  CUR_I=$(first_unclaimed "$L_BLOCKED_SPEC")
+  [ -n "$CUR_I" ] || CUR_I=$(first_unclaimed "$L_TRIAGE")
+  if [ -z "$CUR_I" ]; then
     :
   elif ! flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
-    log "curator já a correr no seu slot — a triagem espera a vez"
+    log "curator já a correr no seu slot — a fila espera a vez"
   else
-    I=$(first_with "$L_TRIAGE")
+    I="$CUR_I"
     log "CURATOR (paralelo) -> #$I"
     nohup bash "$SCRIPT_DIR/curator.sh" "$I" \
       >> "$LOG_DIR/curator-bg.log" 2>&1 &
@@ -677,57 +812,69 @@ while true; do
   # merging next is what turns approved work into landed work; verifying after
   # that is what closes issues. Only then do we start new work — otherwise the
   # backlog grows faster than it drains and nothing ever reaches qa:done.
-
-  # 1. Review open PRs whose head has moved since the last review.
-  PR=$(pick_pr)
-  if [ -n "$PR" ]; then run_review "$PR"; DID=1; fi
-
-  # 2. Gate approved PRs in the browser, then merge them.
   #
-  # Ahead of verification on purpose. An issue here is holding an OPEN PR, and an
-  # open PR rots against `dev` — every fix that lands meanwhile is another chance
-  # for it to go DIRTY and need a conflict round trip. Landing it is what turns
-  # approved work into merged work; verification can wait one cycle, an ageing
-  # branch cannot.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_PREMERGE")
-    if [ -n "$I" ]; then run_premerge "$I"; DID=1; fi
-  fi
+  # The order is unchanged by parallelism: slots are handed out top-down, so with
+  # one free slot the fleet behaves exactly like the serial pipeline did.
 
-  # 3. Verify merged fixes on dev.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_VERIFY")
-    if [ -n "$I" ]; then run_verify "$I"; DID=1; fi
-  fi
+  while :; do
+    SLOT=$(free_slot)
+    [ -n "$SLOT" ] || break
 
-  # 4. Rework: code problems back to the implementer.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_BLOCKED_IMPL")
+    # 1. Review open PRs whose head has moved since the last review.
+    PR=$(pick_pr)
+    if [ -n "$PR" ] && ! issue_in_flight "$PR"; then
+      # Marked as reviewed at DISPATCH, not at completion. pick_pr keys off the head
+      # sha, so leaving it unmarked while the review runs detached would hand the same
+      # PR to every free slot in the same cycle.
+      mark_reviewed "$PR"
+      dispatch "$SLOT" review "$PR" "REVIEWER -> PR #$PR"
+      FILLED=$((FILLED+1)); continue
+    fi
+
+    # 2. Gate approved PRs in the browser, then merge them.
+    #
+    # Ahead of verification on purpose. An issue here is holding an OPEN PR, and an
+    # open PR rots against `dev` — every fix that lands meanwhile is another chance
+    # for it to go DIRTY and need a conflict round trip. Landing it is what turns
+    # approved work into merged work; verification can wait one cycle, an ageing
+    # branch cannot.
+    I=$(first_unclaimed "$L_PREMERGE")
+    if [ -n "$I" ]; then
+      dispatch "$SLOT" premerge "$I" "GATE PRÉ-MERGE -> #$I"
+      FILLED=$((FILLED+1)); continue
+    fi
+
+    # 3. Verify merged fixes on dev.
+    I=$(first_unclaimed "$L_VERIFY")
+    if [ -n "$I" ]; then
+      dispatch "$SLOT" verify "$I" "QA VERIFIER -> #$I"
+      FILLED=$((FILLED+1)); continue
+    fi
+
+    # 4. Rework: code problems back to the implementer.
+    I=$(first_unclaimed "$L_BLOCKED_IMPL")
     if [ -n "$I" ]; then
       if escalate_if_stuck "$I"; then
         log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS"
-        run_implement "$I"
+        dispatch "$SLOT" implement "$I" "IMPLEMENTADOR -> #$I"
+        FILLED=$((FILLED+1))
       fi
-      DID=1
+      continue
     fi
-  fi
 
-  # 5. Rework: briefing problems back to the curator.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_BLOCKED_SPEC")
+    # 6. Implement curated issues.
+    I=$(first_unclaimed "$L_READY")
     if [ -n "$I" ]; then
-      # No escalation check here: this IS the escalation target. Counting it would
-      # bounce the issue straight back out of the re-analysis it was sent for.
-      run_curator "$I"
-      DID=1
+      dispatch "$SLOT" implement "$I" "IMPLEMENTADOR -> #$I"
+      FILLED=$((FILLED+1)); continue
     fi
-  fi
 
-  # 6. Implement curated issues.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_READY")
-    if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
-  fi
+    break   # nothing actionable left; leave the remaining slots idle
+  done
+
+  [ "$FILLED" -gt 0 ] && log "$FILLED despacho(s) neste ciclo; $(busy_slots)/$MAX_PARALLEL slots ocupados"
+  DID=$(( FILLED > 0 ? 1 : 0 ))
+  [ "$(busy_slots)" -gt 0 ] && DID=1
 
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then

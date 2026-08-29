@@ -100,6 +100,40 @@ Quando um issue encrava, escala a **estratégia**, não o issue:
 | 3 | volta ao curator **com o histórico de falhas** — o briefing é reescrito a partir do que falhou, não do palpite inicial |
 | 4+ | força `split` em pedaços que caibam |
 
+### Quantos issues correm ao mesmo tempo
+
+Os papéis de escrita partilhavam um lock, pela razão no cabeçalho do
+`orchestrator.sh`: dois agentes a fazer push ao mesmo tempo é como se perde trabalho.
+Verdade para o **mesmo** issue, falso para issues diferentes — cada implementador tem
+a sua worktree e o seu branch `qa/issue-N`.
+
+Correm agora até `TEAM_MAX_PARALLEL` em simultâneo, com omissão derivada da memória
+**disponível** (não dos cores, não da RAM total): um `flutter build web --release`
+tem picos de 2-3 GB, e duas dessas numa máquina que entra em swap são mais lentas do
+que uma que não entra. O tecto rígido (`TEAM_MAX_PARALLEL_CEILING`, 4) não é sobre a
+máquina: o recurso escasso é a quota da subscrição, e N agentes gastam-na N vezes
+mais depressa.
+
+O que a frota tem de coordenar, e onde estava o risco:
+
+| Recurso | Porque colide | Como se resolve |
+|---|---|---|
+| lock do agente | `run-agent.sh` aborta com `exit 75` se o slot estiver tomado | um slot por despacho (`main-1`…`main-N`) |
+| porta do gate | o `serve-app.sh` liberta a porta de quem a segurar, portanto o gate B mata o servidor do A **e o tester de A passa a conduzir o build de B** — veredicto sobre o branch errado | porta por slot (`7403 + índice`) |
+| o issue | `qa:premerge` e `qa:verify` não mudam de etiqueta durante a corrida | registo de issues em voo (`first_unclaimed`) |
+| veredictos | o `cleanup_stale` apaga ficheiros de veredicto; com um slot, ter o lock provava que nada corria — com N não prova nada | só apaga com a frota toda parada |
+
+O curator fica **fora** da frota: tem um lock próprio e uma segunda instância abortaria
+com `exit 75`. Continua a correr em paralelo no seu slot, e serve as duas filas
+(`qa:blocked-spec` antes de `qa:triage` — um briefing errado à espera é um
+implementador a construir contra ele outra vez).
+
+A promoção é adiada enquanto houver qualquer slot ocupado: o `promote.sh` assume que
+nada está a meio, e um gate a integrar durante a promoção põe um fix por verificar
+em `main` entre duas leituras.
+
+Com `TEAM_MAX_PARALLEL=1` o comportamento é indistinguível do anterior.
+
 ### O travão das corridas sem veredicto
 
 Três estados devolvem o issue a si próprios quando a corrida não produz veredicto:
