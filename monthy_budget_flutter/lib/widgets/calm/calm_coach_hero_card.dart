@@ -98,10 +98,8 @@ class CalmCoachHeroCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      quote,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                    _CoachQuoteText(
+                      quote: quote,
                       style: GoogleFonts.fraunces(
                         fontSize: 22,
                         fontWeight: FontWeight.w400,
@@ -126,6 +124,109 @@ class CalmCoachHeroCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Renders [quote] clipped to 3 lines, truncating on a word boundary
+/// (never mid-word/mid-number) — Flutter's native `TextOverflow.ellipsis`
+/// clips at the glyph level, which can cut a number like "300" down to
+/// "30…" when it falls right at the wrap point (issue #1324).
+class _CoachQuoteText extends StatefulWidget {
+  const _CoachQuoteText({required this.quote, required this.style});
+
+  final String quote;
+  final TextStyle style;
+
+  @override
+  State<_CoachQuoteText> createState() => _CoachQuoteTextState();
+}
+
+class _CoachQuoteTextState extends State<_CoachQuoteText> {
+  double? _cachedWidth;
+  String? _cachedQuote;
+  TextScaler? _cachedTextScaler;
+  String? _cachedResult;
+
+  String _resolve(
+    double maxWidth,
+    TextDirection textDirection,
+    TextScaler textScaler,
+  ) {
+    if (_cachedResult != null &&
+        _cachedWidth == maxWidth &&
+        _cachedQuote == widget.quote &&
+        _cachedTextScaler == textScaler) {
+      return _cachedResult!;
+    }
+    final result = _truncateWordSafe(
+      text: widget.quote,
+      style: widget.style,
+      maxWidth: maxWidth,
+      maxLines: 3,
+      textDirection: textDirection,
+      textScaler: textScaler,
+    );
+    _cachedWidth = maxWidth;
+    _cachedQuote = widget.quote;
+    _cachedTextScaler = textScaler;
+    _cachedResult = result;
+    return result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textDirection = Directionality.of(context);
+    final textScaler = MediaQuery.textScalerOf(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Text(
+          _resolve(constraints.maxWidth, textDirection, textScaler),
+          maxLines: 3,
+          overflow: TextOverflow.clip,
+          textScaler: textScaler,
+          style: widget.style,
+        );
+      },
+    );
+  }
+}
+
+/// Returns [text] unchanged if it fits within [maxLines] at [maxWidth];
+/// otherwise backs off word-by-word until it fits, then appends '…'.
+///
+/// Measures with the same [textScaler] the [Text] widget will actually
+/// paint with — a mismatch here (e.g. measuring at scale 1.0 while the
+/// user has a larger system text scale) lets the truncated string still
+/// overflow 3 lines once painted for real (issue #1324 rework).
+String _truncateWordSafe({
+  required String text,
+  required TextStyle style,
+  required double maxWidth,
+  required int maxLines,
+  required TextDirection textDirection,
+  required TextScaler textScaler,
+}) {
+  bool exceeds(String candidate) {
+    final painter = TextPainter(
+      text: TextSpan(text: candidate, style: style),
+      maxLines: maxLines,
+      textDirection: textDirection,
+      textScaler: textScaler,
+    )..layout(maxWidth: maxWidth);
+    return painter.didExceedMaxLines;
+  }
+
+  if (!exceeds(text)) {
+    return text;
+  }
+
+  final words = text.split(' ');
+  for (var end = words.length - 1; end > 0; end--) {
+    final candidate = '${words.sublist(0, end).join(' ')}…';
+    if (!exceeds(candidate)) {
+      return candidate;
+    }
+  }
+  return '…';
 }
 
 class _CtaPill extends StatelessWidget {
