@@ -1148,7 +1148,7 @@ abstract class S {
   /// Empty state body in coach chat
   ///
   /// In pt, this message translates to:
-  /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
+  /// **'Pergunta o que quiseres sobre o teu orçamento, despesas ou poupanças. Vou usar os teus dados reais para dar conselhos personalizados.'**
   String get coachEmptyBody;
 
   /// Eyebrow label above quick-prompt suggestion chips in coach screen
@@ -1160,13 +1160,13 @@ abstract class S {
   /// Quick prompt suggestion 1
   ///
   /// In pt, this message translates to:
-  /// **'Onde posso cortar despesas este mes?'**
+  /// **'Onde posso cortar despesas este mês?'**
   String get coachQuickPrompt1;
 
   /// Quick prompt suggestion 2
   ///
   /// In pt, this message translates to:
-  /// **'Como melhoro a minha poupanca?'**
+  /// **'Como melhoro a minha poupança?'**
   String get coachQuickPrompt2;
 
   /// Quick prompt suggestion 3
@@ -1196,31 +1196,31 @@ abstract class S {
   /// Credits pill label
   ///
   /// In pt, this message translates to:
-  /// **'{count} creditos'**
+  /// **'{count} créditos'**
   String coachCreditsCount(int count);
 
   /// Memory section header
   ///
   /// In pt, this message translates to:
-  /// **'Memoria'**
+  /// **'Memória'**
   String get coachMemory;
 
   /// Cost info when mode is free
   ///
   /// In pt, this message translates to:
-  /// **'Modo Eco — sem custos de creditos.'**
+  /// **'Modo Eco — sem custos de créditos.'**
   String get coachCostFree;
 
   /// Cost info per message
   ///
   /// In pt, this message translates to:
-  /// **'Esta mensagem custa {cost} creditos.'**
+  /// **'Esta mensagem custa {cost} créditos.'**
   String coachCostCredits(int cost);
 
   /// Free label on mode chip
   ///
   /// In pt, this message translates to:
-  /// **'Gratis'**
+  /// **'Grátis'**
   String get coachFree;
 
   /// Cost per message on mode chip
@@ -1232,19 +1232,19 @@ abstract class S {
   /// Eco fallback banner title
   ///
   /// In pt, this message translates to:
-  /// **'Modo Eco ativo (sem creditos)'**
+  /// **'Modo Eco ativo (sem créditos)'**
   String get coachEcoFallbackTitle;
 
   /// Eco fallback banner body
   ///
   /// In pt, this message translates to:
-  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
+  /// **'Podes continuar a conversar, mas com memória reduzida.'**
   String get coachEcoFallbackBody;
 
   /// Button to restore memory/credits
   ///
   /// In pt, this message translates to:
-  /// **'Restaurar memoria'**
+  /// **'Restaurar memória'**
   String get coachRestoreMemory;
 
   /// No description provided for @cmdAssistantTitle.
@@ -1286,7 +1286,7 @@ abstract class S {
   /// No description provided for @cmdSuggestionOpenSettings.
   ///
   /// In pt, this message translates to:
-  /// **'Ir para definicoes'**
+  /// **'Ir para definições'**
   String get cmdSuggestionOpenSettings;
 
   /// No description provided for @cmdTemplateAddExpense.
@@ -1304,7 +1304,7 @@ abstract class S {
   /// No description provided for @cmdTemplateOpenSettings.
   ///
   /// In pt, this message translates to:
-  /// **'Abre as definicoes'**
+  /// **'Abre as definições'**
   String get cmdTemplateOpenSettings;
 
   /// No description provided for @cmdTemplateChangeTheme.
@@ -1316,13 +1316,13 @@ abstract class S {
   /// No description provided for @cmdExecutionFailed.
   ///
   /// In pt, this message translates to:
-  /// **'Percebi o pedido, mas nao consegui executar. Tenta novamente.'**
+  /// **'Percebi o pedido, mas não consegui executar. Tenta novamente.'**
   String get cmdExecutionFailed;
 
   /// No description provided for @cmdNotUnderstood.
   ///
   /// In pt, this message translates to:
-  /// **'Nao percebi. Podes reformular?'**
+  /// **'Não percebi. Podes reformular?'**
   String get cmdNotUnderstood;
 
   /// No description provided for @cmdUndo.
@@ -1346,19 +1346,19 @@ abstract class S {
   /// No description provided for @cmdCapabilitiesTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Acoes disponiveis'**
+  /// **'Ações disponíveis'**
   String get cmdCapabilitiesTitle;
 
   /// No description provided for @cmdCapabilitiesSubtitle.
   ///
   /// In pt, this message translates to:
-  /// **'Estas sao as acoes que o assistente suporta neste momento.'**
+  /// **'Estas são as ações que o assistente suporta neste momento.'**
   String get cmdCapabilitiesSubtitle;
 
   /// No description provided for @cmdCapabilitiesFooter.
   ///
   /// In pt, this message translates to:
-  /// **'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.'**
+  /// **'Estamos a adicionar mais. Se ainda não estiver aqui, pode não funcionar.'**
   String get cmdCapabilitiesFooter;
 
   /// No description provided for @cmdCapabilityAddExpense.
@@ -1412,19 +1412,19 @@ abstract class S {
   /// No description provided for @cmdCapabilityAddSavingsGoal.
   ///
   /// In pt, this message translates to:
-  /// **'Criar objetivo de poupanca'**
+  /// **'Criar objetivo de poupança'**
   String get cmdCapabilityAddSavingsGoal;
 
   /// No description provided for @cmdCapabilityAddSavingsGoalExample.
   ///
   /// In pt, this message translates to:
-  /// **'Cria objetivo de poupanca [nome] de [valor]'**
+  /// **'Cria objetivo de poupança [nome] de [valor]'**
   String get cmdCapabilityAddSavingsGoalExample;
 
   /// No description provided for @cmdCapabilityAddSavingsContribution.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar ao objetivo de poupanca'**
+  /// **'Adicionar ao objetivo de poupança'**
   String get cmdCapabilityAddSavingsContribution;
 
   /// No description provided for @cmdCapabilityAddSavingsContributionExample.
@@ -1454,7 +1454,7 @@ abstract class S {
   /// No description provided for @cmdCapabilityDeleteExpenseExample.
   ///
   /// In pt, this message translates to:
-  /// **'Apaga a despesa [descricao]'**
+  /// **'Apaga a despesa [descrição]'**
   String get cmdCapabilityDeleteExpenseExample;
 
   /// No description provided for @cmdCapabilityChangeTheme.
@@ -1490,13 +1490,13 @@ abstract class S {
   /// No description provided for @cmdCapabilityChangeLanguageExample.
   ///
   /// In pt, this message translates to:
-  /// **'Idioma [ingles/portugues/espanhol/frances]'**
+  /// **'Idioma [inglês/português/espanhol/francês]'**
   String get cmdCapabilityChangeLanguageExample;
 
   /// No description provided for @cmdCapabilityNavigate.
   ///
   /// In pt, this message translates to:
-  /// **'Abrir ecra'**
+  /// **'Abrir ecrã'**
   String get cmdCapabilityNavigate;
 
   /// No description provided for @cmdCapabilityNavigateExample.
@@ -8018,7 +8018,7 @@ abstract class S {
   /// No description provided for @barcodeProductNotFound.
   ///
   /// In pt, this message translates to:
-  /// **'Produto Nao Encontrado'**
+  /// **'Produto Não Encontrado'**
   String get barcodeProductNotFound;
 
   /// No description provided for @barcodeLabel.
@@ -10718,7 +10718,7 @@ abstract class S {
   /// Plus memory feature
   ///
   /// In pt, this message translates to:
-  /// **'Memoria: 20 msgs'**
+  /// **'Memória: 20 msgs'**
   String get coachCompareMemory20;
 
   /// Plus detailed replies feature
@@ -10742,7 +10742,7 @@ abstract class S {
   /// Eco memory feature
   ///
   /// In pt, this message translates to:
-  /// **'Memoria: 6 msgs'**
+  /// **'Memória: 6 msgs'**
   String get coachCompareMemory6;
 
   /// Eco short replies feature
@@ -10760,43 +10760,43 @@ abstract class S {
   /// Endowment Plus banner text
   ///
   /// In pt, this message translates to:
-  /// **'Estas a usar o modo Plus gratuitamente — o coach lembra as ultimas 20 mensagens ({remaining} restantes)'**
+  /// **'Estás a usar o modo Plus gratuitamente — o coach lembra as últimas 20 mensagens ({remaining} restantes)'**
   String coachEndowmentBanner(int remaining);
 
   /// Smart recommendation for Pro mode
   ///
   /// In pt, this message translates to:
-  /// **'Pergunta complexa detetada — Pro daria uma analise mais detalhada ({cost} cr.)'**
+  /// **'Pergunta complexa detetada — Pro daria uma análise mais detalhada ({cost} cr.)'**
   String coachRecommendPro(int cost);
 
   /// Smart recommendation for Plus mode
   ///
   /// In pt, this message translates to:
-  /// **'Plus da mais contexto para esta analise ({cost} cr.)'**
+  /// **'Plus dá mais contexto para esta análise ({cost} cr.)'**
   String coachRecommendPlus(int cost);
 
   /// Label for inline micro-action next step
   ///
   /// In pt, this message translates to:
-  /// **'PROXIMO PASSO'**
+  /// **'PRÓXIMO PASSO'**
   String get coachNextStep;
 
   /// Header for micro-action follow-up card
   ///
   /// In pt, this message translates to:
-  /// **'Acao pendente da ultima sessao'**
+  /// **'Ação pendente da última sessão'**
   String get coachPendingAction;
 
   /// How many days ago the micro-action was suggested
   ///
   /// In pt, this message translates to:
-  /// **'Sugerido ha {daysAgo} {daysAgo, plural, =1{dia} other{dias}}'**
+  /// **'Sugerido há {daysAgo} {daysAgo, plural, =1{dia} other{dias}}'**
   String coachSuggestedDaysAgo(int daysAgo);
 
   /// Credit cap warning in mode selector panel
   ///
   /// In pt, this message translates to:
-  /// **'Maximo atingido (150). Usa os teus creditos antes da proxima renovacao!'**
+  /// **'Máximo atingido (150). Usa os teus créditos antes da próxima renovação!'**
   String get coachCapWarning;
 
   /// How many sessions a credit pack provides
@@ -10808,7 +10808,7 @@ abstract class S {
   /// Title of the credit packs bottom sheet
   ///
   /// In pt, this message translates to:
-  /// **'Creditos AI Coach'**
+  /// **'Créditos AI Coach'**
   String get coachCreditsTitle;
 
   /// Remaining credits badge
@@ -10820,7 +10820,7 @@ abstract class S {
   /// Prefix for ROI insight in credit sheet
   ///
   /// In pt, this message translates to:
-  /// **'Na ultima sessao Pro, discutimos '**
+  /// **'Na última sessão Pro, discutimos '**
   String get coachRoiInsightPrefix;
 
   /// Potential label in ROI insight
@@ -10832,19 +10832,19 @@ abstract class S {
   /// Cost suffix in ROI insight
   ///
   /// In pt, this message translates to:
-  /// **'. Custou 5 creditos (€0,05).'**
+  /// **'. Custou 5 créditos (€0,05).'**
   String get coachRoiCost;
 
   /// Credit cap warning in the credit packs sheet
   ///
   /// In pt, this message translates to:
-  /// **'Maximo atingido ({max}). Usa os creditos antes de comprar mais.'**
+  /// **'Máximo atingido ({max}). Usa os créditos antes de comprar mais.'**
   String coachCapWarningSheet(int max);
 
   /// Label below credit count in pack card
   ///
   /// In pt, this message translates to:
-  /// **'creditos'**
+  /// **'créditos'**
   String get coachCreditsLabel;
 
   /// Badge on recommended credit pack
@@ -10856,25 +10856,25 @@ abstract class S {
   /// Warning about wasted credits when buying a pack
   ///
   /// In pt, this message translates to:
-  /// **'Perderias {wasted} creditos'**
+  /// **'Perderias {wasted} créditos'**
   String coachWastedCredits(int wasted);
 
   /// Personalized pack recommendation
   ///
   /// In pt, this message translates to:
-  /// **'Recomendamos o pacote de {credits} creditos'**
+  /// **'Recomendamos o pacote de {credits} créditos'**
   String coachRecommendedPack(int credits);
 
   /// No description provided for @cmdInvalidAction.
   ///
   /// In pt, this message translates to:
-  /// **'Acao ou parametros invalidos: {action}'**
+  /// **'Ação ou parâmetros inválidos: {action}'**
   String cmdInvalidAction(String action);
 
   /// No description provided for @cmdUnknownAction.
   ///
   /// In pt, this message translates to:
-  /// **'Acao desconhecida: {action}'**
+  /// **'Ação desconhecida: {action}'**
   String cmdUnknownAction(String action);
 
   /// No description provided for @cmdExpenseAdded.
@@ -10892,7 +10892,7 @@ abstract class S {
   /// No description provided for @cmdSavingsGoalAdded.
   ///
   /// In pt, this message translates to:
-  /// **'Objetivo de poupanca adicionado: {name}'**
+  /// **'Objetivo de poupança adicionado: {name}'**
   String cmdSavingsGoalAdded(String name);
 
   /// No description provided for @cmdRecurringExpenseAdded.
@@ -10904,7 +10904,7 @@ abstract class S {
   /// No description provided for @cmdShoppingItemNotFound.
   ///
   /// In pt, this message translates to:
-  /// **'Artigo nao encontrado: {name}'**
+  /// **'Artigo não encontrado: {name}'**
   String cmdShoppingItemNotFound(String name);
 
   /// No description provided for @cmdShoppingItemRemoved.
@@ -10916,13 +10916,13 @@ abstract class S {
   /// No description provided for @cmdSavingsGoalNotFound.
   ///
   /// In pt, this message translates to:
-  /// **'Objetivo de poupanca nao encontrado: {name}'**
+  /// **'Objetivo de poupança não encontrado: {name}'**
   String cmdSavingsGoalNotFound(String name);
 
   /// No description provided for @cmdContributionAdded.
   ///
   /// In pt, this message translates to:
-  /// **'Contribuicao adicionada: {amount} a {name}'**
+  /// **'Contribuição adicionada: {amount} a {name}'**
   String cmdContributionAdded(String amount, String name);
 
   /// No description provided for @cmdShoppingItemChecked.
@@ -10940,7 +10940,7 @@ abstract class S {
   /// No description provided for @cmdExpenseNotFound.
   ///
   /// In pt, this message translates to:
-  /// **'Despesa nao encontrada: {description}'**
+  /// **'Despesa não encontrada: {description}'**
   String cmdExpenseNotFound(String description);
 
   /// No description provided for @cmdExpenseDeleted.
@@ -10982,49 +10982,49 @@ abstract class S {
   /// No description provided for @cmdParseError.
   ///
   /// In pt, this message translates to:
-  /// **'Desculpe, nao consegui entender o seu pedido. Tente reformular.'**
+  /// **'Desculpe, não consegui entender o seu pedido. Tente reformular.'**
   String get cmdParseError;
 
   /// No description provided for @cmdHelpOutput.
   ///
   /// In pt, this message translates to:
-  /// **'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda'**
+  /// **'Comandos disponíveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupança: cria objetivo de poupança [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descrição]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [inglês/português/espanhol/francês]\n- Navegar: abre [ecrã]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda'**
   String get cmdHelpOutput;
 
   /// No description provided for @coachOfflineBanner.
   ///
   /// In pt, this message translates to:
-  /// **'Sem ligacao. O coach de IA precisa de ligacao a internet.'**
+  /// **'Sem ligação. O coach de IA precisa de ligação a internet.'**
   String get coachOfflineBanner;
 
   /// No description provided for @coachOfflineSendDisabled.
   ///
   /// In pt, this message translates to:
-  /// **'Envio desativado enquanto esta sem ligacao.'**
+  /// **'Envio desativado enquanto está sem ligação.'**
   String get coachOfflineSendDisabled;
 
   /// No description provided for @cmdOfflineBanner.
   ///
   /// In pt, this message translates to:
-  /// **'Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.'**
+  /// **'Sem ligação. Apenas comandos locais (tema, navegação) funcionam.'**
   String get cmdOfflineBanner;
 
   /// No description provided for @cmdOfflineBlocked.
   ///
   /// In pt, this message translates to:
-  /// **'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.'**
+  /// **'Este comando precisa de ligação a internet. Tente um comando local como mudar o tema ou navegar.'**
   String get cmdOfflineBlocked;
 
   /// No description provided for @coachFreeTrialRemaining.
   ///
   /// In pt, this message translates to:
-  /// **'{count} pergunta(s) gratuita(s) restante(s) este mes'**
+  /// **'{count} pergunta(s) gratuita(s) restante(s) este mês'**
   String coachFreeTrialRemaining(int count);
 
   /// No description provided for @coachFreeTrialExhausted.
   ///
   /// In pt, this message translates to:
-  /// **'Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.'**
+  /// **'Utilizou todas as suas perguntas gratuitas este mês. Atualize para continuar a usar o AI Coach.'**
   String get coachFreeTrialExhausted;
 
   /// No description provided for @coachFreeTrialUpgrade.
@@ -11036,7 +11036,7 @@ abstract class S {
   /// No description provided for @coachFreeTrialBanner.
   ///
   /// In pt, this message translates to:
-  /// **'Periodo gratuito: {used}/{total} perguntas usadas este mes'**
+  /// **'Período gratuito: {used}/{total} perguntas usadas este mês'**
   String coachFreeTrialBanner(int used, int total);
 
   /// No description provided for @mealCourseSoupStarter.

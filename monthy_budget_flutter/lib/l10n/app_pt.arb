@@ -787,7 +787,7 @@
     "@coachEmptyTitle": {
         "description": "Empty state title in coach chat"
     },
-    "coachEmptyBody": "Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.",
+    "coachEmptyBody": "Pergunta o que quiseres sobre o teu orçamento, despesas ou poupanças. Vou usar os teus dados reais para dar conselhos personalizados.",
     "@coachEmptyBody": {
         "description": "Empty state body in coach chat"
     },
@@ -795,11 +795,11 @@
     "@coachSuggestionsEyebrow": {
         "description": "Eyebrow label above quick-prompt suggestion chips in coach screen"
     },
-    "coachQuickPrompt1": "Onde posso cortar despesas este mes?",
+    "coachQuickPrompt1": "Onde posso cortar despesas este mês?",
     "@coachQuickPrompt1": {
         "description": "Quick prompt suggestion 1"
     },
-    "coachQuickPrompt2": "Como melhoro a minha poupanca?",
+    "coachQuickPrompt2": "Como melhoro a minha poupança?",
     "@coachQuickPrompt2": {
         "description": "Quick prompt suggestion 2"
     },
@@ -819,7 +819,7 @@
     "@coachAssistant": {
         "description": "Label for assistant messages"
     },
-    "coachCreditsCount": "{count} creditos",
+    "coachCreditsCount": "{count} créditos",
     "@coachCreditsCount": {
         "description": "Credits pill label",
         "placeholders": {
@@ -828,15 +828,15 @@
             }
         }
     },
-    "coachMemory": "Memoria",
+    "coachMemory": "Memória",
     "@coachMemory": {
         "description": "Memory section header"
     },
-    "coachCostFree": "Modo Eco — sem custos de creditos.",
+    "coachCostFree": "Modo Eco — sem custos de créditos.",
     "@coachCostFree": {
         "description": "Cost info when mode is free"
     },
-    "coachCostCredits": "Esta mensagem custa {cost} creditos.",
+    "coachCostCredits": "Esta mensagem custa {cost} créditos.",
     "@coachCostCredits": {
         "description": "Cost info per message",
         "placeholders": {
@@ -845,7 +845,7 @@
             }
         }
     },
-    "coachFree": "Gratis",
+    "coachFree": "Grátis",
     "@coachFree": {
         "description": "Free label on mode chip"
     },
@@ -858,15 +858,15 @@
             }
         }
     },
-    "coachEcoFallbackTitle": "Modo Eco ativo (sem creditos)",
+    "coachEcoFallbackTitle": "Modo Eco ativo (sem créditos)",
     "@coachEcoFallbackTitle": {
         "description": "Eco fallback banner title"
     },
-    "coachEcoFallbackBody": "Podes continuar a conversar, mas com memoria reduzida.",
+    "coachEcoFallbackBody": "Podes continuar a conversar, mas com memória reduzida.",
     "@coachEcoFallbackBody": {
         "description": "Eco fallback banner body"
     },
-    "coachRestoreMemory": "Restaurar memoria",
+    "coachRestoreMemory": "Restaurar memória",
     "@coachRestoreMemory": {
         "description": "Button to restore memory/credits"
     },
@@ -876,19 +876,19 @@
     "cmdSuggestionAddExpense": "Adicionar despesa",
     "cmdSuggestionOpenList": "Abrir lista de compras",
     "cmdSuggestionChangeTheme": "Mudar tema",
-    "cmdSuggestionOpenSettings": "Ir para definicoes",
+    "cmdSuggestionOpenSettings": "Ir para definições",
     "cmdTemplateAddExpense": "Adiciona [valor] euros em [categoria]",
     "cmdTemplateOpenList": "Abre a lista de compras",
-    "cmdTemplateOpenSettings": "Abre as definicoes",
+    "cmdTemplateOpenSettings": "Abre as definições",
     "cmdTemplateChangeTheme": "Muda o tema para [claro/escuro]",
-    "cmdExecutionFailed": "Percebi o pedido, mas nao consegui executar. Tenta novamente.",
-    "cmdNotUnderstood": "Nao percebi. Podes reformular?",
+    "cmdExecutionFailed": "Percebi o pedido, mas não consegui executar. Tenta novamente.",
+    "cmdNotUnderstood": "Não percebi. Podes reformular?",
     "cmdUndo": "Desfazer",
     "expenseDeleted": "Despesa eliminada",
     "cmdCapabilitiesCta": "O que posso fazer?",
-    "cmdCapabilitiesTitle": "Acoes disponiveis",
-    "cmdCapabilitiesSubtitle": "Estas sao as acoes que o assistente suporta neste momento.",
-    "cmdCapabilitiesFooter": "Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.",
+    "cmdCapabilitiesTitle": "Ações disponíveis",
+    "cmdCapabilitiesSubtitle": "Estas são as ações que o assistente suporta neste momento.",
+    "cmdCapabilitiesFooter": "Estamos a adicionar mais. Se ainda não estiver aqui, pode não funcionar.",
     "cmdCapabilityAddExpense": "Adicionar uma despesa",
     "cmdCapabilityAddExpenseExample": "Adiciona [valor] euros em [categoria]",
     "cmdCapabilityAddShoppingItem": "Adicionar item a lista",
@@ -897,21 +897,21 @@
     "cmdCapabilityRemoveShoppingItemExample": "Remove [item] da lista de compras",
     "cmdCapabilityToggleShoppingItemChecked": "Marcar ou desmarcar item da lista",
     "cmdCapabilityToggleShoppingItemCheckedExample": "Marca [item] na lista de compras",
-    "cmdCapabilityAddSavingsGoal": "Criar objetivo de poupanca",
-    "cmdCapabilityAddSavingsGoalExample": "Cria objetivo de poupanca [nome] de [valor]",
-    "cmdCapabilityAddSavingsContribution": "Adicionar ao objetivo de poupanca",
+    "cmdCapabilityAddSavingsGoal": "Criar objetivo de poupança",
+    "cmdCapabilityAddSavingsGoalExample": "Cria objetivo de poupança [nome] de [valor]",
+    "cmdCapabilityAddSavingsContribution": "Adicionar ao objetivo de poupança",
     "cmdCapabilityAddSavingsContributionExample": "Adiciona [valor] ao objetivo [nome]",
     "cmdCapabilityAddRecurringExpense": "Adicionar despesa recorrente",
     "cmdCapabilityAddRecurringExpenseExample": "Adiciona despesa recorrente [valor] em [categoria] dia [dia]",
     "cmdCapabilityDeleteExpense": "Apagar uma despesa",
-    "cmdCapabilityDeleteExpenseExample": "Apaga a despesa [descricao]",
+    "cmdCapabilityDeleteExpenseExample": "Apaga a despesa [descrição]",
     "cmdCapabilityChangeTheme": "Mudar tema",
     "cmdCapabilityChangeThemeExample": "Muda o tema para [claro/escuro]",
     "cmdCapabilityChangePalette": "Mudar paleta de cor",
     "cmdCapabilityChangePaletteExample": "Cor [ocean/emerald/violet/teal/sunset]",
     "cmdCapabilityChangeLanguage": "Mudar idioma",
-    "cmdCapabilityChangeLanguageExample": "Idioma [ingles/portugues/espanhol/frances]",
-    "cmdCapabilityNavigate": "Abrir ecra",
+    "cmdCapabilityChangeLanguageExample": "Idioma [inglês/português/espanhol/francês]",
+    "cmdCapabilityNavigate": "Abrir ecrã",
     "cmdCapabilityNavigateExample": "Abre a lista de compras",
     "cmdCapabilityClearChecked": "Limpar itens marcados",
     "cmdCapabilityClearCheckedExample": "Limpa os itens marcados",
@@ -4821,7 +4821,7 @@
     "barcodeScanHint": "Aponte a camera para um codigo de barras",
     "barcodeScanTooltip": "Ler codigo de barras",
     "barcodeProductFound": "Produto Encontrado",
-    "barcodeProductNotFound": "Produto Nao Encontrado",
+    "barcodeProductNotFound": "Produto Não Encontrado",
     "barcodeLabel": "Codigo de barras",
     "barcodeAddToList": "Adicionar a Lista",
     "barcodeManualEntry": "Nenhum produto encontrado. Insira os dados manualmente:",
@@ -5864,7 +5864,7 @@
     "@coachDowngradeTitle": { "description": "Title of the downgrade transition card" },
     "coachCompareWithPlus": "Com Plus",
     "@coachCompareWithPlus": { "description": "Column header for Plus features in downgrade comparison" },
-    "coachCompareMemory20": "Memoria: 20 msgs",
+    "coachCompareMemory20": "Memória: 20 msgs",
     "@coachCompareMemory20": { "description": "Plus memory feature" },
     "coachCompareDetailedReplies": "Respostas detalhadas",
     "@coachCompareDetailedReplies": { "description": "Plus detailed replies feature" },
@@ -5872,45 +5872,45 @@
     "@coachCompareFinancialContext": { "description": "Plus financial context feature" },
     "coachCompareWithEco": "Com Eco",
     "@coachCompareWithEco": { "description": "Column header for Eco features in downgrade comparison" },
-    "coachCompareMemory6": "Memoria: 6 msgs",
+    "coachCompareMemory6": "Memória: 6 msgs",
     "@coachCompareMemory6": { "description": "Eco memory feature" },
     "coachCompareShortReplies": "Respostas curtas",
     "@coachCompareShortReplies": { "description": "Eco short replies feature" },
     "coachCompareLimitedContext": "Contexto limitado",
     "@coachCompareLimitedContext": { "description": "Eco limited context feature" },
-    "coachEndowmentBanner": "Estas a usar o modo Plus gratuitamente — o coach lembra as ultimas 20 mensagens ({remaining} restantes)",
+    "coachEndowmentBanner": "Estás a usar o modo Plus gratuitamente — o coach lembra as últimas 20 mensagens ({remaining} restantes)",
     "@coachEndowmentBanner": {
         "description": "Endowment Plus banner text",
         "placeholders": {
             "remaining": { "type": "int" }
         }
     },
-    "coachRecommendPro": "Pergunta complexa detetada — Pro daria uma analise mais detalhada ({cost} cr.)",
+    "coachRecommendPro": "Pergunta complexa detetada — Pro daria uma análise mais detalhada ({cost} cr.)",
     "@coachRecommendPro": {
         "description": "Smart recommendation for Pro mode",
         "placeholders": {
             "cost": { "type": "int" }
         }
     },
-    "coachRecommendPlus": "Plus da mais contexto para esta analise ({cost} cr.)",
+    "coachRecommendPlus": "Plus dá mais contexto para esta análise ({cost} cr.)",
     "@coachRecommendPlus": {
         "description": "Smart recommendation for Plus mode",
         "placeholders": {
             "cost": { "type": "int" }
         }
     },
-    "coachNextStep": "PROXIMO PASSO",
+    "coachNextStep": "PRÓXIMO PASSO",
     "@coachNextStep": { "description": "Label for inline micro-action next step" },
-    "coachPendingAction": "Acao pendente da ultima sessao",
+    "coachPendingAction": "Ação pendente da última sessão",
     "@coachPendingAction": { "description": "Header for micro-action follow-up card" },
-    "coachSuggestedDaysAgo": "Sugerido ha {daysAgo} {daysAgo, plural, =1{dia} other{dias}}",
+    "coachSuggestedDaysAgo": "Sugerido há {daysAgo} {daysAgo, plural, =1{dia} other{dias}}",
     "@coachSuggestedDaysAgo": {
         "description": "How many days ago the micro-action was suggested",
         "placeholders": {
             "daysAgo": { "type": "int" }
         }
     },
-    "coachCapWarning": "Maximo atingido (150). Usa os teus creditos antes da proxima renovacao!",
+    "coachCapWarning": "Máximo atingido (150). Usa os teus créditos antes da próxima renovação!",
     "@coachCapWarning": { "description": "Credit cap warning in mode selector panel" },
     "coachPackSessions": "{plus} consultas Plus ou {pro} consultas Pro",
     "@coachPackSessions": {
@@ -5920,7 +5920,7 @@
             "pro": { "type": "int" }
         }
     },
-    "coachCreditsTitle": "Creditos AI Coach",
+    "coachCreditsTitle": "Créditos AI Coach",
     "@coachCreditsTitle": { "description": "Title of the credit packs bottom sheet" },
     "coachCreditsRemaining": "{count} restantes",
     "@coachCreditsRemaining": {
@@ -5929,31 +5929,31 @@
             "count": { "type": "int" }
         }
     },
-    "coachRoiInsightPrefix": "Na ultima sessao Pro, discutimos ",
+    "coachRoiInsightPrefix": "Na última sessão Pro, discutimos ",
     "@coachRoiInsightPrefix": { "description": "Prefix for ROI insight in credit sheet" },
     "coachRoiPotential": ". Potencial: ",
     "@coachRoiPotential": { "description": "Potential label in ROI insight" },
-    "coachRoiCost": ". Custou 5 creditos (€0,05).",
+    "coachRoiCost": ". Custou 5 créditos (€0,05).",
     "@coachRoiCost": { "description": "Cost suffix in ROI insight" },
-    "coachCapWarningSheet": "Maximo atingido ({max}). Usa os creditos antes de comprar mais.",
+    "coachCapWarningSheet": "Máximo atingido ({max}). Usa os créditos antes de comprar mais.",
     "@coachCapWarningSheet": {
         "description": "Credit cap warning in the credit packs sheet",
         "placeholders": {
             "max": { "type": "int" }
         }
     },
-    "coachCreditsLabel": "creditos",
+    "coachCreditsLabel": "créditos",
     "@coachCreditsLabel": { "description": "Label below credit count in pack card" },
     "coachBestValue": "MELHOR VALOR",
     "@coachBestValue": { "description": "Badge on recommended credit pack" },
-    "coachWastedCredits": "Perderias {wasted} creditos",
+    "coachWastedCredits": "Perderias {wasted} créditos",
     "@coachWastedCredits": {
         "description": "Warning about wasted credits when buying a pack",
         "placeholders": {
             "wasted": { "type": "int" }
         }
     },
-    "coachRecommendedPack": "Recomendamos o pacote de {credits} creditos",
+    "coachRecommendedPack": "Recomendamos o pacote de {credits} créditos",
     "@coachRecommendedPack": {
         "description": "Personalized pack recommendation",
         "placeholders": {
@@ -5961,13 +5961,13 @@
         }
     },
 
-    "cmdInvalidAction": "Acao ou parametros invalidos: {action}",
+    "cmdInvalidAction": "Ação ou parâmetros inválidos: {action}",
     "@cmdInvalidAction": {
         "placeholders": {
             "action": { "type": "String" }
         }
     },
-    "cmdUnknownAction": "Acao desconhecida: {action}",
+    "cmdUnknownAction": "Ação desconhecida: {action}",
     "@cmdUnknownAction": {
         "placeholders": {
             "action": { "type": "String" }
@@ -5986,7 +5986,7 @@
             "name": { "type": "String" }
         }
     },
-    "cmdSavingsGoalAdded": "Objetivo de poupanca adicionado: {name}",
+    "cmdSavingsGoalAdded": "Objetivo de poupança adicionado: {name}",
     "@cmdSavingsGoalAdded": {
         "placeholders": {
             "name": { "type": "String" }
@@ -5999,7 +5999,7 @@
             "category": { "type": "String" }
         }
     },
-    "cmdShoppingItemNotFound": "Artigo nao encontrado: {name}",
+    "cmdShoppingItemNotFound": "Artigo não encontrado: {name}",
     "@cmdShoppingItemNotFound": {
         "placeholders": {
             "name": { "type": "String" }
@@ -6011,13 +6011,13 @@
             "name": { "type": "String" }
         }
     },
-    "cmdSavingsGoalNotFound": "Objetivo de poupanca nao encontrado: {name}",
+    "cmdSavingsGoalNotFound": "Objetivo de poupança não encontrado: {name}",
     "@cmdSavingsGoalNotFound": {
         "placeholders": {
             "name": { "type": "String" }
         }
     },
-    "cmdContributionAdded": "Contribuicao adicionada: {amount} a {name}",
+    "cmdContributionAdded": "Contribuição adicionada: {amount} a {name}",
     "@cmdContributionAdded": {
         "placeholders": {
             "amount": { "type": "String" },
@@ -6036,7 +6036,7 @@
             "name": { "type": "String" }
         }
     },
-    "cmdExpenseNotFound": "Despesa nao encontrada: {description}",
+    "cmdExpenseNotFound": "Despesa não encontrada: {description}",
     "@cmdExpenseNotFound": {
         "placeholders": {
             "description": { "type": "String" }
@@ -6073,21 +6073,21 @@
         }
     },
     "cmdCheckedItemsCleared": "Itens marcados limpos",
-    "cmdParseError": "Desculpe, nao consegui entender o seu pedido. Tente reformular.",
-    "cmdHelpOutput": "Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda",
-    "coachOfflineBanner": "Sem ligacao. O coach de IA precisa de ligacao a internet.",
-    "coachOfflineSendDisabled": "Envio desativado enquanto esta sem ligacao.",
-    "cmdOfflineBanner": "Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.",
-    "cmdOfflineBlocked": "Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.",
-    "coachFreeTrialRemaining": "{count} pergunta(s) gratuita(s) restante(s) este mes",
+    "cmdParseError": "Desculpe, não consegui entender o seu pedido. Tente reformular.",
+    "cmdHelpOutput": "Comandos disponíveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupança: cria objetivo de poupança [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descrição]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [inglês/português/espanhol/francês]\n- Navegar: abre [ecrã]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda",
+    "coachOfflineBanner": "Sem ligação. O coach de IA precisa de ligação a internet.",
+    "coachOfflineSendDisabled": "Envio desativado enquanto está sem ligação.",
+    "cmdOfflineBanner": "Sem ligação. Apenas comandos locais (tema, navegação) funcionam.",
+    "cmdOfflineBlocked": "Este comando precisa de ligação a internet. Tente um comando local como mudar o tema ou navegar.",
+    "coachFreeTrialRemaining": "{count} pergunta(s) gratuita(s) restante(s) este mês",
     "@coachFreeTrialRemaining": {
         "placeholders": {
             "count": { "type": "int" }
         }
     },
-    "coachFreeTrialExhausted": "Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.",
+    "coachFreeTrialExhausted": "Utilizou todas as suas perguntas gratuitas este mês. Atualize para continuar a usar o AI Coach.",
     "coachFreeTrialUpgrade": "Atualizar para coaching ilimitado",
-    "coachFreeTrialBanner": "Periodo gratuito: {used}/{total} perguntas usadas este mes",
+    "coachFreeTrialBanner": "Período gratuito: {used}/{total} perguntas usadas este mês",
     "@coachFreeTrialBanner": {
         "placeholders": {
             "used": { "type": "int" },
