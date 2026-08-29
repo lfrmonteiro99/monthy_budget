@@ -845,6 +845,18 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     ),
                     child: CustomScrollView(
                     key: ExpenseTrackerTourKeys.categoryList,
+                    // Off-screen sliver children within Flutter's default
+                    // cacheExtent (250px) still get a real SemanticsNode
+                    // (flagged isHidden) at their literal, unclipped page
+                    // position. That's inert on native platforms — the OS
+                    // a11y service scrolls before focusing a hidden node —
+                    // but Flutter web's DOM semantics mirror does not clip
+                    // or otherwise hide it, so it renders as a phantom,
+                    // dead-click accessibility node wherever it happens to
+                    // land (here: over the FAB/bottom nav bar, #1307).
+                    // Disabling the look-ahead cache removes the node
+                    // entirely until it's actually scrolled into view.
+                    cacheExtent: 0.0,
                     slivers: [
                       // "ALERTAS" card — over-budget categories
                       if (summaries.any((s) => s.isOver))

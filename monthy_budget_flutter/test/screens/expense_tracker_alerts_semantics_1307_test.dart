@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/app_shell.dart';
+import 'package:monthly_management/onboarding/expense_tracker_tour.dart';
 import 'package:monthly_management/screens/expense_tracker_screen.dart';
 import 'package:monthly_management/widgets/expense/category_section.dart';
 import 'package:monthly_management/widgets/expense/expense_alerts_card.dart';
@@ -331,6 +332,147 @@ void main() {
       expect(rowFinder, findsOneWidget);
       final rowSemantics = tester.getSemantics(rowFinder);
       expect(rowSemantics.label, contains('Housing'));
+
+      handle.dispose();
+    },
+  );
+
+  testWidgets(
+    'Recentes does not enter the semantics tree ahead of scroll when it '
+    'sits just past the fold, so it never leaks onto the FAB/nav-bar band '
+    '(#1307)',
+    (tester) async {
+      // Reproduces the QA critic's "phantom Recentes" finding empirically:
+      // built the real branch as a QA web bundle, dumped the live
+      // <flt-semantics> tree, and found a "Recentes" group node reported at
+      // y=773..1021 — geometry that overlaps the FAB ("Registar despesa",
+      // y=787..843), the chat launcher (y=796..844) and the bottom nav bar
+      // (y=860..932) — while the screenshot at that same state shows nothing
+      // painted there (blank, then FAB/chat/nav-bar). Root cause: Despesas'
+      // CustomScrollView (lib/screens/expense_tracker_screen.dart) used
+      // Flutter's default cacheExtent (250 logical px). ExpenseRecentCard is
+      // wrapped in a (non-lazy) SliverToBoxAdapter, so its Element/RenderObject
+      // is ALWAYS built regardless of scroll offset or cacheExtent — that part
+      // was never the bug, and `find.byType`/`find.bySemanticsLabel` (which
+      // both special-case "clipped past the viewport" as not-found, the same
+      // way the #1202 test suite already documented) cannot see it either
+      // way. What cacheExtent DOES control is whether the *sliver protocol*
+      // includes that child's geometry in the semantics tree it hands to the
+      // engine: with the default 250px cache window, a child starting just
+      // past the fold — exactly where Recentes sits once five over-budget
+      // categories stretch Alertas almost to the viewport's bottom edge — is
+      // treated as "nearby enough to pre-announce", producing a real
+      // SemanticsNode at its literal, unclipped page position. That is inert
+      // on native platforms (TalkBack/VoiceOver scroll the list before
+      // focusing an off-screen node), but Flutter web's DOM semantics mirror
+      // places the node at those literal coordinates with no clip, so it
+      // reads to an AT user — and to a plain mouse click at those
+      // coordinates — as content sitting on top of the nav bar: a dead,
+      // mis-described hit target. Proven directly against the raw
+      // SemanticsNode tree below (`toStringDeep()`), the same data a11y
+      // tooling (native or the QA critic's browser dump) actually reads —
+      // `find.byType`/`find.bySemanticsLabel` were tried first and could not
+      // tell the buggy and fixed states apart, since both filter out
+      // scrolled-off content by construction.
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+      tester.view.physicalSize = const Size(430, 932);
+      tester.view.devicePixelRatio = 1.0;
+
+      final overBudgetCategories = [
+        'alimentacao',
+        'lazer',
+        'energia',
+        'saude',
+        'outros',
+      ];
+      final settings = makeSettings(
+        expenses: overBudgetCategories
+            .map((c) => makeExpense(id: 'budget_$c', category: c, amount: 10))
+            .toList(),
+      );
+      final actuals = overBudgetCategories
+          .map((c) => makeActualExpense(
+                id: 'ae_$c',
+                category: c,
+                amount: 200,
+                description: 'Correios',
+              ))
+          .toList();
+
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          ExpenseTrackerScreen(
+            settings: settings,
+            expenses: actuals,
+            householdId: 'house-1',
+            onAdd: (_) async {},
+            onUpdate: (_) async {},
+            onDelete: (_) async {},
+            onLoadMonth: (_) async => actuals,
+            monthlyBudgets: {for (final c in overBudgetCategories) c: 10},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ExpenseAlertsCard), findsOneWidget);
+      final viewportRect =
+          tester.getRect(find.byKey(ExpenseTrackerTourKeys.categoryList));
+      final alertsBottom = tester.getBottomLeft(
+        find.byType(ExpenseAlertsCard),
+      ).dy;
+      expect(
+        alertsBottom,
+        greaterThan(viewportRect.bottom - 250),
+        reason: 'the fixture must put Alertas within one cache-extent '
+            '(250px) of the viewport bottom, or this test would not '
+            'exercise the reported off-by-cache-window geometry',
+      );
+
+      String semanticsDump() => tester.binding.renderViews.first.owner!
+          .semanticsOwner!.rootSemanticsNode!
+          .toStringDeep();
+
+      // Not part of the pre-scroll fold: its row content must not appear in
+      // the semantics tree at all yet. This is the exact signal a browser's
+      // <flt-semantics> DOM mirror exports, and it is what a mouse click (or
+      // a screen reader) would find sitting at those coordinates today.
+      expect(
+        semanticsDump(),
+        isNot(contains('Correios')),
+        reason: 'Recentes sits past the FAB-clearance-shrunk viewport and '
+            "must not enter the semantics tree just because it's within a "
+            "look-ahead cache window — Flutter web's DOM semantics mirror "
+            'exposes any such node, unclipped, at coordinates overlapping '
+            'the FAB/nav bar (#1307).',
+      );
+
+      // Scrolling it into view must still work — this is not about
+      // disabling Recentes, only about not pre-announcing it before the
+      // user scrolls there.
+      await tester.drag(
+        find.byKey(ExpenseTrackerTourKeys.categoryList),
+        const Offset(0, -600),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        semanticsDump(),
+        contains('Correios'),
+        reason: 'Recentes must become reachable in the semantics tree once '
+            'actually scrolled into view',
+      );
+
+      // Five over-budget categories at 430px width also hit the
+      // pre-existing, unrelated RenderFlex overflow in
+      // lib/widgets/expense/category_section.dart:81 (a CalmPill + Text Row
+      // without Flexible/Expanded, already called out and deliberately not
+      // asserted on by test/screens/expense_tracker_fab_overlap_1202_test.dart).
+      // Only drained here so it doesn't leak into the next test.
+      tester.takeException();
 
       handle.dispose();
     },
