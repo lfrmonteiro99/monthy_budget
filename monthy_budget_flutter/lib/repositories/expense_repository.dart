@@ -167,6 +167,14 @@ abstract class BudgetRepository {
   Future<List<MonthlyBudget>> loadMonth(String householdId, String monthKey);
   Future<void> save(MonthlyBudget budget, String householdId);
   Future<void> saveAll(List<MonthlyBudget> budgets, String householdId);
+  /// Deletes the override row for [category] in [monthKey], if any. Needed
+  /// because [saveAll] is upsert-only: removing an entry from the map passed
+  /// to it does not delete the previously-saved row (#1320).
+  Future<void> deleteMonth(
+    String householdId,
+    String monthKey,
+    String category,
+  );
 }
 
 class SupabaseBudgetRepository implements BudgetRepository {
@@ -201,6 +209,20 @@ class SupabaseBudgetRepository implements BudgetRepository {
       budgets.map((budget) => budget.toSupabase(householdId)).toList(),
       onConflict: 'household_id,month_key,category',
     );
+  }
+
+  @override
+  Future<void> deleteMonth(
+    String householdId,
+    String monthKey,
+    String category,
+  ) async {
+    await _client
+        .from('monthly_budgets')
+        .delete()
+        .eq('household_id', householdId)
+        .eq('month_key', monthKey)
+        .eq('category', category);
   }
 }
 

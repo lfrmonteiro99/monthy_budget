@@ -175,6 +175,19 @@ class QaBudgetRepository implements BudgetRepository {
         _docId(budget): budget.toSupabase(householdId),
     });
   }
+
+  @override
+  Future<void> deleteMonth(
+    String householdId,
+    String monthKey,
+    String category,
+  ) {
+    return _store.delete(
+      QaCollections.monthlyBudgets,
+      householdId,
+      '$monthKey|$category',
+    );
+  }
 }
 
 class QaRecurringExpenseRepository implements RecurringExpenseRepository {

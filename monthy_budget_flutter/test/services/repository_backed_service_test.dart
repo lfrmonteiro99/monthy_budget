@@ -224,6 +224,7 @@ class InMemoryBudgetRepository implements BudgetRepository {
   final List<MonthlyBudget> savedBudgets = [];
   final List<String> savedHouseholdIds = [];
   int saveAllCalls = 0;
+  final List<(String, String, String)> deletedMonths = [];
 
   @override
   Future<List<MonthlyBudget>> loadMonth(String householdId, String monthKey) async {
@@ -241,6 +242,18 @@ class InMemoryBudgetRepository implements BudgetRepository {
     saveAllCalls += 1;
     savedBudgets.addAll(budgets);
     savedHouseholdIds.addAll(List<String>.filled(budgets.length, householdId));
+  }
+
+  @override
+  Future<void> deleteMonth(
+    String householdId,
+    String monthKey,
+    String category,
+  ) async {
+    deletedMonths.add((householdId, monthKey, category));
+    savedBudgets.removeWhere(
+      (b) => b.monthKey == monthKey && b.category == category,
+    );
   }
 }
 

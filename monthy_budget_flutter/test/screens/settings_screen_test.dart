@@ -16,6 +16,8 @@ void main() {
     String? initialSection,
     AppSettings settings = const AppSettings(),
     ValueChanged<AppSettings>? onSave,
+    Map<String, double> monthlyBudgets = const {},
+    ValueChanged<Map<String, double>>? onSaveMonthlyBudgets,
     Future<List<AssociatedHouseholdMember>> Function(String householdId)?
     loadAssociatedMembers,
     Future<String> Function(String householdId)? generateInviteCode,
@@ -30,6 +32,8 @@ void main() {
       isAdmin: true,
       householdId: 'hh_1',
       initialSection: initialSection ?? 'household',
+      monthlyBudgets: monthlyBudgets,
+      onSaveMonthlyBudgets: onSaveMonthlyBudgets,
       loadAssociatedMembers: loadAssociatedMembers,
       generateInviteCode: generateInviteCode,
     );
@@ -234,5 +238,226 @@ void main() {
 
     // Tapping Save persists the draft (no need to go back to the main screen).
     expect(saved, isNotNull);
+  });
+
+  // ── Issue #1320: editing the recurring-expense "monthly budget" field was
+  // silently inert whenever a current-month override existed, with no
+  // warning. See docs in the issue for the reproduction. ──
+  group('expense category budget vs current-month override (issue #1320)', () {
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    String currentMonthLabel() {
+      final now = DateTime.now();
+      return '${monthNames[now.month - 1]} ${now.year}';
+    }
+
+    const expense = ExpenseItem(
+      id: 'compras',
+      label: 'Compras / Alimentação',
+      category: 'alimentacao',
+      amount: 520,
+    );
+
+    Future<void> expandExpenseCard(WidgetTester tester) async {
+      await tester.pumpAndSettle();
+      // AnimatedCrossFade builds both children up front (collapsed row +
+      // the pre-built expanded fields, which repeat the label in the
+      // "Expense Name" input's initialValue), so more than one Text widget
+      // can match; the collapsed row is built first.
+      final collapsedRow = find.text('Compras / Alimentação').first;
+      await tester.tap(collapsedRow);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets(
+        'field above the amount input reads "default budget", not "monthly budget"',
+        (tester) async {
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {'alimentacao': 520},
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      expect(find.text('DEFAULT BUDGET'), findsOneWidget,
+          reason: 'the template field is not the current-month value; '
+              'calling it "monthly budget" is what misled the user in #1320');
+      expect(find.text('MONTHLY BUDGET'), findsNothing);
+    });
+
+    testWidgets(
+        'override banner with its Adjust action sits right after the amount field, no scroll needed',
+        (tester) async {
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {'alimentacao': 520},
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      final month = currentMonthLabel();
+      final bannerFinder = find.text('Adjusted for $month: 520.00');
+      final adjustActionFinder = find.text('Adjust for $month');
+      expect(bannerFinder, findsOneWidget,
+          reason: 'issue #1320: this text existed but only at the bottom of '
+              'the already-expanded card, requiring an extra scroll');
+      expect(adjustActionFinder, findsOneWidget,
+          reason: 'the banner must offer a one-tap way to apply the edited '
+              'value to the current month, not just inform silently');
+
+      final amountFieldY =
+          tester.getTopLeft(find.byKey(const ValueKey('expense_amount_compras'))).dy;
+      final bannerY = tester.getTopLeft(bannerFinder).dy;
+      final recurringToggleY =
+          tester.getTopLeft(find.text('Recurring payment')).dy;
+
+      expect(bannerY, greaterThan(amountFieldY),
+          reason: 'banner must render after the amount field');
+      expect(bannerY, lessThan(recurringToggleY),
+          reason: 'banner must render immediately after the field, before '
+              'the rest of the card (recurring toggle etc.), so it is '
+              'visible without scrolling inside the expanded category');
+    });
+
+    testWidgets(
+        'tapping Adjust for {month} then Save applies the edited value to the current-month override',
+        (tester) async {
+      Map<String, double>? savedBudgets;
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {'alimentacao': 520},
+            onSaveMonthlyBudgets: (m) => savedBudgets = m,
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      final amountField = find.byKey(const ValueKey('expense_amount_compras'));
+      await tester.ensureVisible(amountField);
+      await tester.enterText(amountField, '600');
+      await tester.pump();
+
+      final month = currentMonthLabel();
+      final adjustAction = find.text('Adjust for $month');
+      await tester.ensureVisible(adjustAction);
+      await tester.tap(adjustAction);
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.check).last);
+      await tester.pumpAndSettle();
+
+      expect(savedBudgets, isNotNull);
+      expect(savedBudgets!['alimentacao'], 600,
+          reason: 'this is the exact defect from #1320: editing the field '
+              'and saving must actually reach the value the rest of the app '
+              '(Dashboard, Despesas) reads for the current month');
+    });
+
+    testWidgets(
+        'editing only the default-budget field (without tapping Adjust) leaves the current-month override unchanged',
+        (tester) async {
+      Map<String, double>? savedBudgets;
+      AppSettings? savedSettings;
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {'alimentacao': 520},
+            onSave: (s) => savedSettings = s,
+            onSaveMonthlyBudgets: (m) => savedBudgets = m,
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      final amountField = find.byKey(const ValueKey('expense_amount_compras'));
+      await tester.ensureVisible(amountField);
+      await tester.enterText(amountField, '600');
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.check).last);
+      await tester.pumpAndSettle();
+
+      // Intentional, per the issue's acceptance criteria: the base template
+      // value does update, but it must NOT silently override the
+      // current-month value without the explicit "Adjust for {month}" tap.
+      expect(savedSettings?.expenses.first.amount, 600);
+      expect(savedBudgets!['alimentacao'], 520);
+    });
+
+    testWidgets(
+        'removing the override via the close icon then Save clears it for the current month',
+        (tester) async {
+      Map<String, double>? savedBudgets;
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {'alimentacao': 520},
+            onSaveMonthlyBudgets: (m) => savedBudgets = m,
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      final closeIcon = find.byIcon(Icons.close);
+      await tester.ensureVisible(closeIcon);
+      await tester.tap(closeIcon);
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.check).last);
+      await tester.pumpAndSettle();
+
+      expect(savedBudgets, isNotNull);
+      expect(savedBudgets!.containsKey('alimentacao'), isFalse);
+    });
+
+    testWidgets(
+        'category without a current-month override still updates immediately on Save (no regression)',
+        (tester) async {
+      AppSettings? savedSettings;
+      Map<String, double>? savedBudgets;
+      await tester.pumpWidget(
+        wrapWithTestApp(
+          buildScreen(
+            initialSection: 'expenses',
+            settings: const AppSettings(expenses: [expense]),
+            monthlyBudgets: const {}, // no override for 'alimentacao'
+            onSave: (s) => savedSettings = s,
+            onSaveMonthlyBudgets: (m) => savedBudgets = m,
+          ),
+        ),
+      );
+      await expandExpenseCard(tester);
+
+      expect(find.textContaining('Adjusted for'), findsNothing,
+          reason: 'no override exists, so no override banner should render');
+
+      final amountField = find.byKey(const ValueKey('expense_amount_compras'));
+      await tester.ensureVisible(amountField);
+      await tester.enterText(amountField, '600');
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.check).last);
+      await tester.pumpAndSettle();
+
+      expect(savedSettings?.expenses.first.amount, 600);
+      expect(savedBudgets, isEmpty);
+    });
   });
 }
