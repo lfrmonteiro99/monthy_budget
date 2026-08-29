@@ -224,8 +224,8 @@ class CommandChatService {
 
     // add_savings_goal (PT/EN/FR/ES)
     final savingsGoalMatch = RegExp(
-      r'(?:cria|cree|crea|create|add|adiciona|ajoute|anade)\s+'
-      r"(?:um\s+)?(?:objetivo\s+de\s+(?:poupanca|ahorro)|savings\s+goal|objectif\s+d'epargne)\s+"
+      r'(?:cria|cr[eé]e|crea|create|add|adiciona|ajoute|anade)\s+'
+      r"(?:um\s+)?(?:objetivo\s+de\s+(?:poupanca|ahorro)|savings\s+goal|objectif\s+d'[eé]pargne)\s+"
       r'(.+?)\s+'
       r'(?:de|with|com)\s+'
       r'(\d+(?:[.,]\d+)?)',
@@ -271,7 +271,7 @@ class CommandChatService {
     // delete_expense (PT/EN/FR/ES)
     final deleteExpenseMatch = RegExp(
       r'(?:apaga|delete|remove|remover|supprime|supprimer|elimina|eliminar|borra|borrar)\s+'
-      r'(?:a\s+|la\s+|el\s+)?(?:despesa|expense|depense|gasto)\s+'
+      r'(?:a\s+|la\s+|el\s+)?(?:despesa|expense|d[eé]pense|gasto)\s+'
       r'(.+)',
       caseSensitive: false,
     ).firstMatch(text);
@@ -288,8 +288,8 @@ class CommandChatService {
 
     // add_recurring_expense (PT/EN/FR/ES)
     final recurringMatch = RegExp(
-      r'(?:adiciona|add|ajoute|anade|cria|cree|crea|create)\s+'
-      r'(?:uma?\s+)?(?:despesa\s+recorrente|recurring\s+expense|depense\s+recurrente|gasto\s+recurrente)\s+'
+      r'(?:adiciona|add|ajoute|anade|cria|cr[eé]e|crea|create)\s+'
+      r'(?:uma?\s+)?(?:despesa\s+recorrente|recurring\s+expense|d[eé]pense\s+r[eé]currente|gasto\s+recurrente)\s+'
       r'(\d+(?:[.,]\d+)?)\s*(?:euros?|eur|€)?\s*'
       r'(?:em|in|en|de)?\s*(\w+)(?:.*?(?:dia|day|jour)\s+(\d{1,2}))?',
       caseSensitive: false,

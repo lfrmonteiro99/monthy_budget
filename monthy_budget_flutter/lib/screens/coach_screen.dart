@@ -223,6 +223,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final text = _composerController.text.trim();
     if (text.isEmpty || _loading) return;
 
+    // Resolve the active app locale before any async gap so the LLM replies
+    // in the user's language (same pattern as _checkRecommendation).
+    final appLanguage = Localizations.localeOf(context).languageCode;
+
     // Pre-flight: free-tier users without a local API key can't reach the
     // edge function; trial/premium users use server-side auth and don't need one.
     if (!AiCoachService.canUseAI(_subscription, apiKey: widget.apiKey)) {
@@ -335,6 +339,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         effectiveMode: effectiveMode,
         lastMicroAction: _subscription.lastMicroAction,
         lastMicroActionDate: _subscription.lastMicroActionDate,
+        languageCode: appLanguage,
       );
 
       if (!mounted) return;
