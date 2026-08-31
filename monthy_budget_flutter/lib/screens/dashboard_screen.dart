@@ -16,6 +16,7 @@ import '../utils/budget_streaks.dart';
 import '../constants/app_constants.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_deductions.dart';
+import '../data/tax/spent_by_category.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 import '../widgets/charts/budget_charts.dart';
 import '../widgets/trend_sheet.dart';
@@ -1260,30 +1261,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildTaxDeductionCard(BuildContext context) {
     final now = DateTime.now();
-    final spentByCategory = <String, double>{};
-    for (final entry in actualExpenseHistory.entries) {
-      final parts = entry.key.split('-');
-      if (parts.length < 2) continue;
-      final year = int.tryParse(parts[0]);
-      if (year != now.year) continue;
-      for (final expense in entry.value) {
-        spentByCategory[expense.category] =
-            (spentByCategory[expense.category] ?? 0) + expense.amount;
-      }
-    }
-    for (final expense in actualExpenses) {
-      if (expense.date.year == now.year) {
-        spentByCategory[expense.category] =
-            (spentByCategory[expense.category] ?? 0) + expense.amount;
-      }
-    }
-    final foodSpent = purchaseHistory.records
-        .where((r) => r.date.year == now.year)
-        .fold(0.0, (s, r) => s + r.amount);
-    if (foodSpent > 0) {
-      spentByCategory['alimentacao'] =
-          (spentByCategory['alimentacao'] ?? 0) + foodSpent;
-    }
+    final spentByCategory = computeSpentByCategory(
+      actualExpenses: actualExpenses,
+      actualExpenseHistory: actualExpenseHistory,
+      purchaseHistory: purchaseHistory,
+      year: now.year,
+      currentMonthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+    );
 
     final deductionSystem = getTaxDeductionSystem(settings.country);
     if (deductionSystem == null) return const SizedBox.shrink();
