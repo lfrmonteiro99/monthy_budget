@@ -846,9 +846,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final pct = total > 0 ? value / total : 0.0;
     final budgetAmount = monthlyBudgets[categoryName] ?? 0;
     final overBudget = budgetAmount > 0 && value > budgetAmount;
-    final trailing = overBudget
-        ? '+${formatCurrency(value - budgetAmount)}'
-        : '${(pct * 100).toStringAsFixed(0)}%';
+    // One unit per card: every row shows its share of the month's total
+    // spend (%) — never a € surplus. Staying over budget is signalled by the
+    // trailing colour instead (AppColors.bad), matching the convention of
+    // 'Orçamento vs Real' without duplicating its negative-€ sign here.
+    final trailing = '${(pct * 100).toStringAsFixed(0)}%';
     return CalmListTile(
       leadingIcon: categoryIconByName(
         categoryName,
@@ -860,6 +862,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? '${formatCurrency(value)} ${l10n.dashboardHeroBudgetLabel(formatCurrency(budgetAmount))}'
           : formatCurrency(value),
       trailing: trailing,
+      trailingColor: overBudget ? AppColors.bad(context) : null,
       onTap: widget.onOpenExpenseTracker,
     );
   }

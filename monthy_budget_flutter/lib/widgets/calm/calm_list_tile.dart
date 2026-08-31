@@ -38,6 +38,7 @@ class CalmListTile extends StatelessWidget {
     this.subtitle,
     this.selectableSubtitle,
     this.trailing,
+    this.trailingColor,
     this.trailingWidget,
     this.onTap,
   })  : assert(
@@ -74,6 +75,12 @@ class CalmListTile extends StatelessWidget {
   /// Optional trailing amount string, rendered via `CalmText.amount`.
   /// Pass `null` to omit the trailing section.
   final String? trailing;
+
+  /// Optional colour override for [trailing]. When null, the default
+  /// `CalmText.amount` colour is used — which keeps every existing call site
+  /// visually identical. Used to flag semantic states (e.g. over-budget rows
+  /// in a currency list) without switching the trailing to a different unit.
+  final Color? trailingColor;
 
   /// Optional trailing affordance widget — for actions only (icon button,
   /// quantity stepper, chevron, generate button). NOT a general content slot:
@@ -137,7 +144,12 @@ class CalmListTile extends StatelessWidget {
           // Optional trailing amount / affordance
           if (trailing != null) ...[
             const SizedBox(width: 12),
-            Text(trailing!, style: CalmText.amount(context)),
+            Text(
+              trailing!,
+              style: trailingColor == null
+                  ? CalmText.amount(context)
+                  : CalmText.amount(context).copyWith(color: trailingColor),
+            ),
           ] else if (trailingWidget != null) ...[
             const SizedBox(width: 8),
             trailingWidget!,
